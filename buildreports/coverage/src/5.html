@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>c:\systems\playground\lendinglibrary\source\chillisoft.lendinglibrary.web\app_start\startup.auth.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin;
+using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.Google;
+using Owin;
+using Chillisoft.LendingLibrary.Web.Models;
+
+namespace Chillisoft.LendingLibrary.Web
+{
+    public partial class Startup
+    {
+        // For more information on configuring authentication, please visit http://go.microsoft.com/fwlink/?LinkId=301864
+        public void ConfigureAuth(IAppBuilder app)
+        {
+            // Configure the db context, user manager and signin manager to use a single instance per request
+            app.CreatePerOwinContext(ApplicationDbContext.Create);
+            app.CreatePerOwinContext&lt;ApplicationUserManager&gt;(ApplicationUserManager.Create);
+            app.CreatePerOwinContext&lt;ApplicationSignInManager&gt;(ApplicationSignInManager.Create);
+
+            // Enable the application to use a cookie to store information for the signed in user
+            // and to use a cookie to temporarily store information about a user logging in with a third party login provider
+            // Configure the sign in cookie
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
+                LoginPath = new PathString(&quot;/Account/Login&quot;),
+                Provider = new CookieAuthenticationProvider
+                {
+                    // Enables the application to validate the security stamp when the user logs in.
+                    // This is a security feature which is used when you change a password or add an external login to your account.  
+                    OnValidateIdentity = SecurityStampValidator.OnValidateIdentity&lt;ApplicationUserManager, ApplicationUser&gt;(
+                        validateInterval: TimeSpan.FromMinutes(30),
+                        regenerateIdentity: (manager, user) =&gt; user.GenerateUserIdentityAsync(manager))
+                }
+            });            
+            app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
+
+            // Enables the application to temporarily store user information when they are verifying the second factor in the two-factor authentication process.
+            app.UseTwoFactorSignInCookie(DefaultAuthenticationTypes.TwoFactorCookie, TimeSpan.FromMinutes(5));
+
+            // Enables the application to remember the second login verification factor such as phone or email.
+            // Once you check this option, your second step of verification during the login process will be remembered on the device where you logged in from.
+            // This is similar to the RememberMe option when you log in.
+            app.UseTwoFactorRememberBrowserCookie(DefaultAuthenticationTypes.TwoFactorRememberBrowserCookie);
+
+            // Uncomment the following lines to enable logging in with third party login providers
+            //app.UseMicrosoftAccountAuthentication(
+            //    clientId: &quot;&quot;,
+            //    clientSecret: &quot;&quot;);
+
+            //app.UseTwitterAuthentication(
+            //   consumerKey: &quot;&quot;,
+            //   consumerSecret: &quot;&quot;);
+
+            //app.UseFacebookAuthentication(
+            //   appId: &quot;&quot;,
+            //   appSecret: &quot;&quot;);
+
+            //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            //{
+            //    ClientId = &quot;&quot;,
+            //    ClientSecret = &quot;&quot;
+            //});
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[16,9,16,10,0],[18,13,18,67,0],[19,13,19,93,0],[20,13,20,97,0],[25,13,35,64,0],[35,103,37,16,0],[38,13,38,84,0],[41,13,41,111,0],[46,13,46,110,0],[66,9,66,10,0],[35,64,35,103,0]]);
+    </script>
+  </body>
+</html>

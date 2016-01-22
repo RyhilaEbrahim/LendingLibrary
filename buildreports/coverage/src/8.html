@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>c:\systems\playground\lendinglibrary\source\chillisoft.lendinglibrary.web\models\accountviewmodels.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+namespace Chillisoft.LendingLibrary.Web.Models
+{
+    public class ExternalLoginConfirmationViewModel
+    {
+        [Required]
+        [Display(Name = &quot;Email&quot;)]
+        public string Email { get; set; }
+    }
+
+    public class ExternalLoginListViewModel
+    {
+        public string ReturnUrl { get; set; }
+    }
+
+    public class SendCodeViewModel
+    {
+        public string SelectedProvider { get; set; }
+        public ICollection&lt;System.Web.Mvc.SelectListItem&gt; Providers { get; set; }
+        public string ReturnUrl { get; set; }
+        public bool RememberMe { get; set; }
+    }
+
+    public class VerifyCodeViewModel
+    {
+        [Required]
+        public string Provider { get; set; }
+
+        [Required]
+        [Display(Name = &quot;Code&quot;)]
+        public string Code { get; set; }
+        public string ReturnUrl { get; set; }
+
+        [Display(Name = &quot;Remember this browser?&quot;)]
+        public bool RememberBrowser { get; set; }
+
+        public bool RememberMe { get; set; }
+    }
+
+    public class ForgotViewModel
+    {
+        [Required]
+        [Display(Name = &quot;Email&quot;)]
+        public string Email { get; set; }
+    }
+
+    public class LoginViewModel
+    {
+        [Required]
+        [Display(Name = &quot;Email&quot;)]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = &quot;Password&quot;)]
+        public string Password { get; set; }
+
+        [Display(Name = &quot;Remember me?&quot;)]
+        public bool RememberMe { get; set; }
+    }
+
+    public class RegisterViewModel
+    {
+        [Required]
+        [EmailAddress]
+        [Display(Name = &quot;Email&quot;)]
+        public string Email { get; set; }
+
+        [Required]
+        [StringLength(100, ErrorMessage = &quot;The {0} must be at least {2} characters long.&quot;, MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = &quot;Password&quot;)]
+        public string Password { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = &quot;Confirm password&quot;)]
+        [Compare(&quot;Password&quot;, ErrorMessage = &quot;The password and confirmation password do not match.&quot;)]
+        public string ConfirmPassword { get; set; }
+    }
+
+    public class ResetPasswordViewModel
+    {
+        [Required]
+        [EmailAddress]
+        [Display(Name = &quot;Email&quot;)]
+        public string Email { get; set; }
+
+        [Required]
+        [StringLength(100, ErrorMessage = &quot;The {0} must be at least {2} characters long.&quot;, MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = &quot;Password&quot;)]
+        public string Password { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = &quot;Confirm password&quot;)]
+        [Compare(&quot;Password&quot;, ErrorMessage = &quot;The password and confirmation password do not match.&quot;)]
+        public string ConfirmPassword { get; set; }
+
+        public string Code { get; set; }
+    }
+
+    public class ForgotPasswordViewModel
+    {
+        [Required]
+        [EmailAddress]
+        [Display(Name = &quot;Email&quot;)]
+        public string Email { get; set; }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,31,10,35,0],[10,36,10,40,0],[15,35,15,39,0],[15,40,15,44,0],[20,42,20,46,0],[20,47,20,51,0],[21,71,21,75,0],[21,76,21,80,0],[22,35,22,39,0],[22,40,22,44,0],[23,34,23,38,0],[23,39,23,43,0],[29,34,29,38,0],[29,39,29,43,0],[33,30,33,34,0],[33,35,33,39,0],[34,35,34,39,0],[34,40,34,44,0],[37,39,37,43,0],[37,44,37,48,0],[39,34,39,38,0],[39,39,39,43,0],[46,31,46,35,0],[46,36,46,40,0],[54,31,54,35,0],[54,36,54,40,0],[59,34,59,38,0],[59,39,59,43,0],[62,34,62,38,0],[62,39,62,43,0],[70,31,70,35,0],[70,36,70,40,0],[76,34,76,38,0],[76,39,76,43,0],[81,41,81,45,0],[81,46,81,50,0],[89,31,89,35,0],[89,36,89,40,0],[95,34,95,38,0],[95,39,95,43,0],[100,41,100,45,0],[100,46,100,50,0],[102,30,102,34,0],[102,35,102,39,0],[110,31,110,35,0],[110,36,110,40,0]]);
+    </script>
+  </body>
+</html>

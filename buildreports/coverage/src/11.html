@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>c:\systems\playground\lendinglibrary\source\chillisoft.lendinglibrary.web\controllers\accountcontroller.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.Globalization;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
+using Chillisoft.LendingLibrary.Web.Models;
+
+namespace Chillisoft.LendingLibrary.Web.Controllers
+{
+    [Authorize]
+    public class AccountController : Controller
+    {
+        private ApplicationSignInManager _signInManager;
+        private ApplicationUserManager _userManager;
+
+        public AccountController()
+        {
+        }
+
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        {
+            UserManager = userManager;
+            SignInManager = signInManager;
+        }
+
+        public ApplicationSignInManager SignInManager
+        {
+            get
+            {
+                return _signInManager ?? HttpContext.GetOwinContext().Get&lt;ApplicationSignInManager&gt;();
+            }
+            private set 
+            { 
+                _signInManager = value; 
+            }
+        }
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager&lt;ApplicationUserManager&gt;();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+
+        //
+        // GET: /Account/Login
+        [AllowAnonymous]
+        public ActionResult Login(string returnUrl)
+        {
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
+        }
+
+        //
+        // POST: /Account/Login
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task&lt;ActionResult&gt; Login(LoginViewModel model, string returnUrl)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // This doesn&#39;t count login failures towards account lockout
+            // To enable password failures to trigger account lockout, change to shouldLockout: true
+            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            switch (result)
+            {
+                case SignInStatus.Success:
+                    return RedirectToLocal(returnUrl);
+                case SignInStatus.LockedOut:
+                    return View(&quot;Lockout&quot;);
+                case SignInStatus.RequiresVerification:
+                    return RedirectToAction(&quot;SendCode&quot;, new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                case SignInStatus.Failure:
+                default:
+                    ModelState.AddModelError(&quot;&quot;, &quot;Invalid login attempt.&quot;);
+                    return View(model);
+            }
+        }
+
+        //
+        // GET: /Account/VerifyCode
+        [AllowAnonymous]
+        public async Task&lt;ActionResult&gt; VerifyCode(string provider, string returnUrl, bool rememberMe)
+        {
+            // Require that the user has already logged in via username/password or external login
+            if (!await SignInManager.HasBeenVerifiedAsync())
+            {
+                return View(&quot;Error&quot;);
+            }
+            return View(new VerifyCodeViewModel { Provider = provider, ReturnUrl = returnUrl, RememberMe = rememberMe });
+        }
+
+        //
+        // POST: /Account/VerifyCode
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task&lt;ActionResult&gt; VerifyCode(VerifyCodeViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // The following code protects for brute force attacks against the two factor codes. 
+            // If a user enters incorrect codes for a specified amount of time then the user account 
+            // will be locked out for a specified amount of time. 
+            // You can configure the account lockout settings in IdentityConfig
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            switch (result)
+            {
+                case SignInStatus.Success:
+                    return RedirectToLocal(model.ReturnUrl);
+                case SignInStatus.LockedOut:
+                    return View(&quot;Lockout&quot;);
+                case SignInStatus.Failure:
+                default:
+                    ModelState.AddModelError(&quot;&quot;, &quot;Invalid code.&quot;);
+                    return View(model);
+            }
+        }
+
+        //
+        // GET: /Account/Register
+        [AllowAnonymous]
+        public ActionResult Register()
+        {
+            return View();
+        }
+
+        //
+        // POST: /Account/Register
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task&lt;ActionResult&gt; Register(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var result = await UserManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+                    
+                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
+                    // Send an email with this link
+                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    // var callbackUrl = Url.Action(&quot;ConfirmEmail&quot;, &quot;Account&quot;, new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    // await UserManager.SendEmailAsync(user.Id, &quot;Confirm your account&quot;, &quot;Please confirm your account by clicking &lt;a href=\&quot;&quot; + callbackUrl + &quot;\&quot;&gt;here&lt;/a&gt;&quot;);
+
+                    return RedirectToAction(&quot;Index&quot;, &quot;Home&quot;);
+                }
+                AddErrors(result);
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+        //
+        // GET: /Account/ConfirmEmail
+        [AllowAnonymous]
+        public async Task&lt;ActionResult&gt; ConfirmEmail(string userId, string code)
+        {
+            if (userId == null || code == null)
+            {
+                return View(&quot;Error&quot;);
+            }
+            var result = await UserManager.ConfirmEmailAsync(userId, code);
+            return View(result.Succeeded ? &quot;ConfirmEmail&quot; : &quot;Error&quot;);
+        }
+
+        //
+        // GET: /Account/ForgotPassword
+        [AllowAnonymous]
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        //
+        // POST: /Account/ForgotPassword
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task&lt;ActionResult&gt; ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await UserManager.FindByNameAsync(model.Email);
+                if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
+                {
+                    // Don&#39;t reveal that the user does not exist or is not confirmed
+                    return View(&quot;ForgotPasswordConfirmation&quot;);
+                }
+
+                // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
+                // Send an email with this link
+                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                // var callbackUrl = Url.Action(&quot;ResetPassword&quot;, &quot;Account&quot;, new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
+                // await UserManager.SendEmailAsync(user.Id, &quot;Reset Password&quot;, &quot;Please reset your password by clicking &lt;a href=\&quot;&quot; + callbackUrl + &quot;\&quot;&gt;here&lt;/a&gt;&quot;);
+                // return RedirectToAction(&quot;ForgotPasswordConfirmation&quot;, &quot;Account&quot;);
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+        //
+        // GET: /Account/ForgotPasswordConfirmation
+        [AllowAnonymous]
+        public ActionResult ForgotPasswordConfirmation()
+        {
+            return View();
+        }
+
+        //
+        // GET: /Account/ResetPassword
+        [AllowAnonymous]
+        public ActionResult ResetPassword(string code)
+        {
+            return code == null ? View(&quot;Error&quot;) : View();
+        }
+
+        //
+        // POST: /Account/ResetPassword
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task&lt;ActionResult&gt; ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            var user = await UserManager.FindByNameAsync(model.Email);
+            if (user == null)
+            {
+                // Don&#39;t reveal that the user does not exist
+                return RedirectToAction(&quot;ResetPasswordConfirmation&quot;, &quot;Account&quot;);
+            }
+            var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
+            if (result.Succeeded)
+            {
+                return RedirectToAction(&quot;ResetPasswordConfirmation&quot;, &quot;Account&quot;);
+            }
+            AddErrors(result);
+            return View();
+        }
+
+        //
+        // GET: /Account/ResetPasswordConfirmation
+        [AllowAnonymous]
+        public ActionResult ResetPasswordConfirmation()
+        {
+            return View();
+        }
+
+        //
+        // POST: /Account/ExternalLogin
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult ExternalLogin(string provider, string returnUrl)
+        {
+            // Request a redirect to the external login provider
+            return new ChallengeResult(provider, Url.Action(&quot;ExternalLoginCallback&quot;, &quot;Account&quot;, new { ReturnUrl = returnUrl }));
+        }
+
+        //
+        // GET: /Account/SendCode
+        [AllowAnonymous]
+        public async Task&lt;ActionResult&gt; SendCode(string returnUrl, bool rememberMe)
+        {
+            var userId = await SignInManager.GetVerifiedUserIdAsync();
+            if (userId == null)
+            {
+                return View(&quot;Error&quot;);
+            }
+            var userFactors = await UserManager.GetValidTwoFactorProvidersAsync(userId);
+            var factorOptions = userFactors.Select(purpose =&gt; new SelectListItem { Text = purpose, Value = purpose }).ToList();
+            return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
+        }
+
+        //
+        // POST: /Account/SendCode
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task&lt;ActionResult&gt; SendCode(SendCodeViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            // Generate the token and send it
+            if (!await SignInManager.SendTwoFactorCodeAsync(model.SelectedProvider))
+            {
+                return View(&quot;Error&quot;);
+            }
+            return RedirectToAction(&quot;VerifyCode&quot;, new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
+        }
+
+        //
+        // GET: /Account/ExternalLoginCallback
+        [AllowAnonymous]
+        public async Task&lt;ActionResult&gt; ExternalLoginCallback(string returnUrl)
+        {
+            var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
+            if (loginInfo == null)
+            {
+                return RedirectToAction(&quot;Login&quot;);
+            }
+
+            // Sign in the user with this external login provider if the user already has a login
+            var result = await SignInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
+            switch (result)
+            {
+                case SignInStatus.Success:
+                    return RedirectToLocal(returnUrl);
+                case SignInStatus.LockedOut:
+                    return View(&quot;Lockout&quot;);
+                case SignInStatus.RequiresVerification:
+                    return RedirectToAction(&quot;SendCode&quot;, new { ReturnUrl = returnUrl, RememberMe = false });
+                case SignInStatus.Failure:
+                default:
+                    // If the user does not have an account, then prompt the user to create an account
+                    ViewBag.ReturnUrl = returnUrl;
+                    ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
+                    return View(&quot;ExternalLoginConfirmation&quot;, new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
+            }
+        }
+
+        //
+        // POST: /Account/ExternalLoginConfirmation
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task&lt;ActionResult&gt; ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction(&quot;Index&quot;, &quot;Manage&quot;);
+            }
+
+            if (ModelState.IsValid)
+            {
+                // Get the information about the user from the external login provider
+                var info = await AuthenticationManager.GetExternalLoginInfoAsync();
+                if (info == null)
+                {
+                    return View(&quot;ExternalLoginFailure&quot;);
+                }
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var result = await UserManager.CreateAsync(user);
+                if (result.Succeeded)
+                {
+                    result = await UserManager.AddLoginAsync(user.Id, info.Login);
+                    if (result.Succeeded)
+                    {
+                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                        return RedirectToLocal(returnUrl);
+                    }
+                }
+                AddErrors(result);
+            }
+
+            ViewBag.ReturnUrl = returnUrl;
+            return View(model);
+        }
+
+        //
+        // POST: /Account/LogOff
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LogOff()
+        {
+            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            return RedirectToAction(&quot;Index&quot;, &quot;Home&quot;);
+        }
+
+        //
+        // GET: /Account/ExternalLoginFailure
+        [AllowAnonymous]
+        public ActionResult ExternalLoginFailure()
+        {
+            return View();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_userManager != null)
+                {
+                    _userManager.Dispose();
+                    _userManager = null;
+                }
+
+                if (_signInManager != null)
+                {
+                    _signInManager.Dispose();
+                    _signInManager = null;
+                }
+            }
+
+            base.Dispose(disposing);
+        }
+
+        #region Helpers
+        // Used for XSRF protection when adding external logins
+        private const string XsrfKey = &quot;XsrfId&quot;;
+
+        private IAuthenticationManager AuthenticationManager
+        {
+            get
+            {
+                return HttpContext.GetOwinContext().Authentication;
+            }
+        }
+
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(&quot;&quot;, error);
+            }
+        }
+
+        private ActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            return RedirectToAction(&quot;Index&quot;, &quot;Home&quot;);
+        }
+
+        internal class ChallengeResult : HttpUnauthorizedResult
+        {
+            public ChallengeResult(string provider, string redirectUri)
+                : this(provider, redirectUri, null)
+            {
+            }
+
+            public ChallengeResult(string provider, string redirectUri, string userId)
+            {
+                LoginProvider = provider;
+                RedirectUri = redirectUri;
+                UserId = userId;
+            }
+
+            public string LoginProvider { get; set; }
+            public string RedirectUri { get; set; }
+            public string UserId { get; set; }
+
+            public override void ExecuteResult(ControllerContext context)
+            {
+                var properties = new AuthenticationProperties { RedirectUri = RedirectUri };
+                if (UserId != null)
+                {
+                    properties.Dictionary[XsrfKey] = UserId;
+                }
+                context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
+            }
+        }
+        #endregion
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[21,9,21,35,0],[22,9,22,10,0],[23,9,23,10,0],[25,9,25,110,0],[26,9,26,10,0],[27,13,27,39,0],[28,13,28,43,0],[29,9,29,10,0],[34,13,34,14,0],[35,17,35,103,0],[36,13,36,14,0],[38,13,38,14,0],[39,17,39,40,0],[40,13,40,14,0],[46,13,46,14,0],[47,17,47,110,0],[48,13,48,14,0],[50,13,50,14,0],[51,17,51,38,0],[52,13,52,14,0],[59,9,59,10,0],[60,13,60,43,0],[61,13,61,27,0],[62,9,62,10,0],[141,9,141,10,0],[142,13,142,27,0],[143,9,143,10,0],[192,9,192,10,0],[193,13,193,27,0],[194,9,194,10,0],[228,9,228,10,0],[229,13,229,27,0],[230,9,230,10,0],[236,9,236,10,0],[237,13,237,58,0],[238,9,238,10,0],[270,9,270,10,0],[271,13,271,27,0],[272,9,272,10,0],[280,9,280,10,0],[282,13,282,129,0],[283,9,283,10,0],[393,9,393,10,0],[394,13,394,89,0],[395,13,395,54,0],[396,9,396,10,0],[402,9,402,10,0],[403,13,403,27,0],[404,9,404,10,0],[407,9,407,10,0],[408,13,408,27,0],[409,13,409,14,0],[410,17,410,42,0],[411,17,411,18,0],[412,21,412,44,0],[413,21,413,41,0],[414,17,414,18,0],[416,17,416,44,0],[417,17,417,18,0],[418,21,418,46,0],[419,21,419,43,0],[420,17,420,18,0],[421,13,421,14,0],[423,13,423,37,0],[424,9,424,10,0],[433,13,433,14,0],[434,17,434,68,0],[435,13,435,14,0],[439,9,439,10,0],[440,13,440,20,0],[440,35,440,48,0],[440,22,440,31,0],[441,13,441,14,0],[442,17,442,53,0],[443,13,443,14,0],[440,32,440,34,0],[444,9,444,10,0],[447,9,447,10,0],[448,13,448,43,0],[449,13,449,14,0],[450,17,450,44,0],[452,13,452,54,0],[453,9,453,10,0],[458,19,458,52,0],[459,13,459,14,0],[460,13,460,14,0],[462,13,462,87,0],[463,13,463,14,0],[464,17,464,42,0],[465,17,465,43,0],[466,17,466,33,0],[467,13,467,14,0],[469,43,469,47,0],[469,48,469,52,0],[470,41,470,45,0],[470,46,470,50,0],[471,36,471,40,0],[471,41,471,45,0],[474,13,474,14,0],[475,17,475,93,0],[476,17,476,36,0],[477,17,477,18,0],[478,21,478,61,0],[479,17,479,18,0],[480,17,480,106,0],[481,13,481,14,0],[70,9,70,10,0],[71,13,71,37,0],[72,13,72,14,0],[73,17,73,36,0],[78,13,78,135,0],[79,13,79,28,0],[82,21,82,55,0],[84,21,84,44,0],[86,21,86,119,0],[89,21,89,76,0],[90,21,90,40,0],[92,9,92,10,0],[98,9,98,10,0],[100,13,100,61,0],[101,13,101,14,0],[102,17,102,38,0],[104,13,104,122,0],[105,9,105,10,0],[113,9,113,10,0],[114,13,114,37,0],[115,13,115,14,0],[116,17,116,36,0],[123,13,123,168,0],[124,13,124,28,0],[127,21,127,61,0],[129,21,129,44,0],[132,21,132,67,0],[133,21,133,40,0],[135,9,135,10,0],[151,9,151,10,0],[152,13,152,36,0],[153,13,153,14,0],[154,17,154,96,0],[155,17,155,82,0],[156,17,156,38,0],[157,17,157,18,0],[158,21,158,102,0],[166,21,166,62,0],[168,17,168,35,0],[169,13,169,14,0],[172,13,172,32,0],[173,9,173,10,0],[179,9,179,10,0],[180,13,180,48,0],[181,13,181,14,0],[182,17,182,38,0],[184,13,184,76,0],[185,13,185,70,0],[186,9,186,10,0],[202,9,202,10,0],[203,13,203,36,0],[204,13,204,14,0],[205,17,205,75,0],[206,17,206,89,0],[207,17,207,18,0],[209,21,209,63,0],[218,13,218,14,0],[221,13,221,32,0],[222,9,222,10,0],[246,9,246,10,0],[247,13,247,37,0],[248,13,248,14,0],[249,17,249,36,0],[251,13,251,71,0],[252,13,252,30,0],[253,13,253,14,0],[255,17,255,81,0],[257,13,257,100,0],[258,13,258,34,0],[259,13,259,14,0],[260,17,260,81,0],[262,13,262,31,0],[263,13,263,27,0],[264,9,264,10,0],[296,63,296,117,0],[289,9,289,10,0],[290,13,290,71,0],[291,13,291,32,0],[292,13,292,14,0],[293,17,293,38,0],[295,13,295,89,0],[296,13,296,63,0],[296,117,296,128,0],[297,13,297,126,0],[298,9,298,10,0],[306,9,306,10,0],[307,13,307,37,0],[308,13,308,14,0],[309,17,309,31,0],[313,13,313,85,0],[314,13,314,14,0],[315,17,315,38,0],[317,13,317,154,0],[318,9,318,10,0],[324,9,324,10,0],[325,13,325,85,0],[326,13,326,35,0],[327,13,327,14,0],[328,17,328,50,0],[332,13,332,98,0],[333,13,333,28,0],[336,21,336,55,0],[338,21,338,44,0],[340,21,340,108,0],[344,21,344,51,0],[345,21,345,75,0],[346,21,346,130,0],[348,9,348,10,0],[356,9,356,10,0],[357,13,357,47,0],[358,13,358,14,0],[359,17,359,60,0],[362,13,362,36,0],[363,13,363,14,0],[365,17,365,84,0],[366,17,366,34,0],[367,17,367,18,0],[368,21,368,57,0],[370,17,370,96,0],[371,17,371,66,0],[372,17,372,38,0],[373,17,373,18,0],[374,21,374,83,0],[375,21,375,42,0],[376,21,376,22,0],[377,25,377,108,0],[378,25,378,59,0],[380,17,380,18,0],[381,17,381,35,0],[382,13,382,14,0],[384,13,384,43,0],[385,13,385,32,0],[386,9,386,10,0]]);
+    </script>
+  </body>
+</html>

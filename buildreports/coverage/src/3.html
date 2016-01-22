@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>c:\systems\playground\lendinglibrary\source\chillisoft.lendinglibrary.web\app_start\identityconfig.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Web;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin;
+using Microsoft.Owin.Security;
+using Chillisoft.LendingLibrary.Web.Models;
+
+namespace Chillisoft.LendingLibrary.Web
+{
+    public class EmailService : IIdentityMessageService
+    {
+        public Task SendAsync(IdentityMessage message)
+        {
+            // Plug in your email service here to send an email.
+            return Task.FromResult(0);
+        }
+    }
+
+    public class SmsService : IIdentityMessageService
+    {
+        public Task SendAsync(IdentityMessage message)
+        {
+            // Plug in your SMS service here to send a text message.
+            return Task.FromResult(0);
+        }
+    }
+
+    // Configure the application user manager used in this application. UserManager is defined in ASP.NET Identity and is used by the application.
+    public class ApplicationUserManager : UserManager&lt;ApplicationUser&gt;
+    {
+        public ApplicationUserManager(IUserStore&lt;ApplicationUser&gt; store)
+            : base(store)
+        {
+        }
+
+        public static ApplicationUserManager Create(IdentityFactoryOptions&lt;ApplicationUserManager&gt; options, IOwinContext context) 
+        {
+            var manager = new ApplicationUserManager(new UserStore&lt;ApplicationUser&gt;(context.Get&lt;ApplicationDbContext&gt;()));
+            // Configure validation logic for usernames
+            manager.UserValidator = new UserValidator&lt;ApplicationUser&gt;(manager)
+            {
+                AllowOnlyAlphanumericUserNames = false,
+                RequireUniqueEmail = true
+            };
+
+            // Configure validation logic for passwords
+            manager.PasswordValidator = new PasswordValidator
+            {
+                RequiredLength = 6,
+                RequireNonLetterOrDigit = true,
+                RequireDigit = true,
+                RequireLowercase = true,
+                RequireUppercase = true,
+            };
+
+            // Configure user lockout defaults
+            manager.UserLockoutEnabledByDefault = true;
+            manager.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(5);
+            manager.MaxFailedAccessAttemptsBeforeLockout = 5;
+
+            // Register two factor authentication providers. This application uses Phone and Emails as a step of receiving a code for verifying the user
+            // You can write your own provider and plug it in here.
+            manager.RegisterTwoFactorProvider(&quot;Phone Code&quot;, new PhoneNumberTokenProvider&lt;ApplicationUser&gt;
+            {
+                MessageFormat = &quot;Your security code is {0}&quot;
+            });
+            manager.RegisterTwoFactorProvider(&quot;Email Code&quot;, new EmailTokenProvider&lt;ApplicationUser&gt;
+            {
+                Subject = &quot;Security Code&quot;,
+                BodyFormat = &quot;Your security code is {0}&quot;
+            });
+            manager.EmailService = new EmailService();
+            manager.SmsService = new SmsService();
+            var dataProtectionProvider = options.DataProtectionProvider;
+            if (dataProtectionProvider != null)
+            {
+                manager.UserTokenProvider = 
+                    new DataProtectorTokenProvider&lt;ApplicationUser&gt;(dataProtectionProvider.Create(&quot;ASP.NET Identity&quot;));
+            }
+            return manager;
+        }
+    }
+
+    // Configure the application sign-in manager which is used in this application.
+    public class ApplicationSignInManager : SignInManager&lt;ApplicationUser, string&gt;
+    {
+        public ApplicationSignInManager(ApplicationUserManager userManager, IAuthenticationManager authenticationManager)
+            : base(userManager, authenticationManager)
+        {
+        }
+
+        public override Task&lt;ClaimsIdentity&gt; CreateUserIdentityAsync(ApplicationUser user)
+        {
+            return user.GenerateUserIdentityAsync((ApplicationUserManager)UserManager);
+        }
+
+        public static ApplicationSignInManager Create(IdentityFactoryOptions&lt;ApplicationSignInManager&gt; options, IOwinContext context)
+        {
+            return new ApplicationSignInManager(context.GetUserManager&lt;ApplicationUserManager&gt;(), context.Authentication);
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[20,9,20,10,0],[22,13,22,39,0],[23,9,23,10,0],[29,9,29,10,0],[31,13,31,39,0],[32,9,32,10,0],[39,15,39,26,0],[40,9,40,10,0],[41,9,41,10,0],[44,9,44,10,0],[45,13,45,123,0],[47,13,51,15,0],[54,13,61,15,0],[64,13,64,56,0],[65,13,65,77,0],[66,13,66,62,0],[70,13,73,16,0],[74,13,78,16,0],[79,13,79,55,0],[80,13,80,51,0],[81,13,81,73,0],[82,13,82,48,0],[83,13,83,14,0],[84,17,85,120,0],[86,13,86,14,0],[87,13,87,28,0],[88,9,88,10,0],[95,15,95,55,0],[96,9,96,10,0],[97,9,97,10,0],[100,9,100,10,0],[101,13,101,88,0],[102,9,102,10,0],[105,9,105,10,0],[106,13,106,123,0],[107,9,107,10,0]]);
+    </script>
+  </body>
+</html>

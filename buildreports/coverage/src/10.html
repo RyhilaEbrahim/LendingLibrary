@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>c:\systems\playground\lendinglibrary\source\chillisoft.lendinglibrary.web\models\manageviewmodels.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNet.Identity;
+using Microsoft.Owin.Security;
+
+namespace Chillisoft.LendingLibrary.Web.Models
+{
+    public class IndexViewModel
+    {
+        public bool HasPassword { get; set; }
+        public IList&lt;UserLoginInfo&gt; Logins { get; set; }
+        public string PhoneNumber { get; set; }
+        public bool TwoFactor { get; set; }
+        public bool BrowserRemembered { get; set; }
+    }
+
+    public class ManageLoginsViewModel
+    {
+        public IList&lt;UserLoginInfo&gt; CurrentLogins { get; set; }
+        public IList&lt;AuthenticationDescription&gt; OtherLogins { get; set; }
+    }
+
+    public class FactorViewModel
+    {
+        public string Purpose { get; set; }
+    }
+
+    public class SetPasswordViewModel
+    {
+        [Required]
+        [StringLength(100, ErrorMessage = &quot;The {0} must be at least {2} characters long.&quot;, MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = &quot;New password&quot;)]
+        public string NewPassword { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = &quot;Confirm new password&quot;)]
+        [Compare(&quot;NewPassword&quot;, ErrorMessage = &quot;The new password and confirmation password do not match.&quot;)]
+        public string ConfirmPassword { get; set; }
+    }
+
+    public class ChangePasswordViewModel
+    {
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = &quot;Current password&quot;)]
+        public string OldPassword { get; set; }
+
+        [Required]
+        [StringLength(100, ErrorMessage = &quot;The {0} must be at least {2} characters long.&quot;, MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = &quot;New password&quot;)]
+        public string NewPassword { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = &quot;Confirm new password&quot;)]
+        [Compare(&quot;NewPassword&quot;, ErrorMessage = &quot;The new password and confirmation password do not match.&quot;)]
+        public string ConfirmPassword { get; set; }
+    }
+
+    public class AddPhoneNumberViewModel
+    {
+        [Required]
+        [Phone]
+        [Display(Name = &quot;Phone Number&quot;)]
+        public string Number { get; set; }
+    }
+
+    public class VerifyPhoneNumberViewModel
+    {
+        [Required]
+        [Display(Name = &quot;Code&quot;)]
+        public string Code { get; set; }
+
+        [Required]
+        [Phone]
+        [Display(Name = &quot;Phone Number&quot;)]
+        public string PhoneNumber { get; set; }
+    }
+
+    public class ConfigureTwoFactorViewModel
+    {
+        public string SelectedProvider { get; set; }
+        public ICollection&lt;System.Web.Mvc.SelectListItem&gt; Providers { get; set; }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,35,10,39,0],[10,40,10,44,0],[11,46,11,50,0],[11,51,11,55,0],[12,37,12,41,0],[12,42,12,46,0],[13,33,13,37,0],[13,38,13,42,0],[14,41,14,45,0],[14,46,14,50,0],[19,53,19,57,0],[19,58,19,62,0],[20,63,20,67,0],[20,68,20,72,0],[25,33,25,37,0],[25,38,25,42,0],[34,37,34,41,0],[34,42,34,46,0],[39,41,39,45,0],[39,46,39,50,0],[47,37,47,41,0],[47,42,47,46,0],[53,37,53,41,0],[53,42,53,46,0],[58,41,58,45,0],[58,46,58,50,0],[66,32,66,36,0],[66,37,66,41,0],[73,30,73,34,0],[73,35,73,39,0],[78,37,78,41,0],[78,42,78,46,0],[83,42,83,46,0],[83,47,83,51,0],[84,71,84,75,0],[84,76,84,80,0]]);
+    </script>
+  </body>
+</html>
