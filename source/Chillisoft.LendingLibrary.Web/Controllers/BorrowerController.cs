@@ -4,46 +4,61 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
+using AutoMapper;
+using Chillisoft.LendingLibrary.Core.Domain;
 using Chillisoft.LendingLibrary.Web.Models;
+using Chillisoft.LendingLibrary.Web.Repositories;
 
 namespace Chillisoft.LendingLibrary.Web.Controllers
 {
     public class BorrowerController : Controller
     {
-        private Dictionary<int, BorrowerViewModel> _borrowers = new Dictionary<int, BorrowerViewModel>
-        {
-            {
-                1,new BorrowerViewModel {Id =1,FirstName = "Ryhila",Surname = "Ebrahim",Email = "Ryhila@test.com"}
-            }
-        }; 
+        private readonly IBorrowerRepository _borrowerRepository;
+        private readonly IMappingEngine _mappingEngine;
 
-        // GET: Borrower
+
+        // GET: BorrowerViewModel
+        public BorrowerController() : this(new BorrowerRepository(), Mapper.Engine)
+        {
+        }
+
+        public BorrowerController(IBorrowerRepository borrowerRepository, IMappingEngine mappingEngine)
+        {
+            _borrowerRepository = borrowerRepository;
+            _mappingEngine = mappingEngine;
+        }
+
         public ActionResult Index()
         {
-            var borrowerViewModels = _borrowers.Values.ToList();
+            var borrowers = _borrowerRepository.GetAll();
+            var borrowerViewModels = _mappingEngine.Map<IEnumerable<BorrowerViewModel>>(borrowers);
             return View(borrowerViewModels);
         }
 
-        // GET: Borrower/Details/5
+      
+        // GET: BorrowerViewModel/Details/5
         public ActionResult Details(int id)
         {
-            var borrowViewModel = _borrowers[id];
+            var borrower = _borrowerRepository.Get(id);
+            var borrowViewModel = _mappingEngine.Map<BorrowerViewModel>(borrower);
             return View(borrowViewModel);
         }
 
-        // GET: Borrower/Create
+        // GET: BorrowerViewModel/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Borrower/Create
+        // POST: BorrowerViewModel/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(BorrowerViewModel viewModel)
         {
             try
             {
+                var borrower = _mappingEngine.Map<Borrower>(viewModel);
                 // TODO: Add insert logic here
+                _borrowerRepository.Save(borrower);
 
                 return RedirectToAction("Index");
             }
@@ -53,20 +68,25 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
             }
         }
 
-        // GET: Borrower/Edit/5
+
+        // GET: BorrowerViewModel/Edit/5
         public ActionResult Edit(int id)
         {
-            var borrowViewModel = _borrowers[id];
+
+            var borrower = _borrowerRepository.Get(id);
+            var borrowViewModel = _mappingEngine.Map<BorrowerViewModel>(borrower);
+           
             return View(borrowViewModel);
         }
 
-        // POST: Borrower/Edit/5
+        // POST: BorrowerViewModel/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(BorrowerViewModel viewModel)
         {
             try
             {
-                // TODO: Add update logic here
+                var borrower = _mappingEngine.Map<Borrower>(viewModel);
+                _borrowerRepository.Save(borrower);
 
                 return RedirectToAction("Index");
             }
@@ -76,19 +96,22 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
             }
         }
 
-        // GET: Borrower/Delete/5
+        // GET: BorrowerViewModel/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var borrower = _borrowerRepository.Get(id);
+            var borrowViewModel = _mappingEngine.Map<BorrowerViewModel>(borrower);
+            return View(borrowViewModel);
         }
 
-        // POST: Borrower/Delete/5
+        // POST: BorrowerViewModel/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Delete(int id,BorrowerViewModel viewModel)
         {
             try
             {
-                // TODO: Add delete logic here
+                var borrower = _mappingEngine.Map<Borrower>(viewModel);
+                _borrowerRepository.Delete(borrower);
 
                 return RedirectToAction("Index");
             }

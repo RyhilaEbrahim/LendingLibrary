@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Chillisoft.LendingLibrary.Core.Domain;
+using Chillisoft.LendingLibrary.Web.Models;
 
 namespace Chillisoft.LendingLibrary.Web
 {
@@ -16,6 +18,11 @@ namespace Chillisoft.LendingLibrary.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            AutoMapper.Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<BorrowerViewModel, Borrower>();
+                cfg.CreateMap<Borrower, BorrowerViewModel>();
+            });
         }
     }
 }
