@@ -22,6 +22,7 @@ namespace Chillisoft.LendingLibrary.Web
             {
                 cfg.CreateMap<BorrowerViewModel, Borrower>();
                 cfg.CreateMap<Borrower, BorrowerViewModel>();
+
             });
         }
     }

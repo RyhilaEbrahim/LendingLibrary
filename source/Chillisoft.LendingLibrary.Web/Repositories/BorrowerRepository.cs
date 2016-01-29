@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Chillisoft.LendingLibrary.Core.Domain;
@@ -11,6 +12,8 @@ namespace Chillisoft.LendingLibrary.Web.Repositories
         Borrower Get(int id);
         void Save(Borrower borrower);
         List<Borrower> GetAll();
+        List<Title> GetAllTitles();
+        Title GetTitleById(int titleId);
     }
 
     public class BorrowerRepository : IBorrowerRepository
@@ -40,7 +43,7 @@ namespace Chillisoft.LendingLibrary.Web.Repositories
                 existingBorrower.FirstName = borrower.FirstName;
                 existingBorrower.Surname = borrower.Surname;
                 existingBorrower.Email = borrower.Email;
-
+                existingBorrower.Title = borrower.Title;
             }
 
         }
@@ -48,6 +51,18 @@ namespace Chillisoft.LendingLibrary.Web.Repositories
         public List<Borrower> GetAll()
         {
             return InMemoryDB.Borrowers.ToList();
+        }
+
+        public List<Title> GetAllTitles()
+        {
+            return InMemoryDB.Titles.ToList();
+        }
+
+        public Title GetTitleById(int titleId)
+        {
+            Predicate<Title> idPredicate = (Title p) => { return p.Id == titleId; };
+
+            return InMemoryDB.Titles.Find(idPredicate);
         }
     }
 }

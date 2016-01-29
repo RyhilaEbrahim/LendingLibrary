@@ -47,7 +47,16 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         // GET: BorrowerViewModel/Create
         public ActionResult Create()
         {
-            return View();
+            var viewModel = new BorrowerViewModel();
+            viewModel.TitlesSelectList = GetTitles(null);
+            return View(viewModel);
+        }
+
+        private List<SelectListItem> GetTitles(int? titleId)
+        {
+            var selectListItems = _borrowerRepository.GetAllTitles()
+                .Select(t => new SelectListItem {Value = t.Id.ToString(), Text = t.Description, Selected = t.Id == titleId.GetValueOrDefault()});
+            return selectListItems.ToList();
         }
 
         // POST: BorrowerViewModel/Create
@@ -57,9 +66,9 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
             try
             {
                 var borrower = _mappingEngine.Map<Borrower>(viewModel);
-                // TODO: Add insert logic here
+                var title = _borrowerRepository.GetTitleById(viewModel.TitleId);
+                borrower.Title = title;
                 _borrowerRepository.Save(borrower);
-
                 return RedirectToAction("Index");
             }
             catch
@@ -74,8 +83,9 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         {
 
             var borrower = _borrowerRepository.Get(id);
-            var borrowViewModel = _mappingEngine.Map<BorrowerViewModel>(borrower);
            
+            var borrowViewModel = _mappingEngine.Map<BorrowerViewModel>(borrower);
+            borrowViewModel.TitlesSelectList = GetTitles(borrowViewModel.TitleId);
             return View(borrowViewModel);
         }
 
@@ -86,6 +96,9 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
             try
             {
                 var borrower = _mappingEngine.Map<Borrower>(viewModel);
+                var title = _borrowerRepository.GetTitleById(viewModel.TitleId);
+                borrower.Title = title;
+
                 _borrowerRepository.Save(borrower);
 
                 return RedirectToAction("Index");

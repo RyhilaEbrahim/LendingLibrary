@@ -24,8 +24,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
 
         public ActionResult Create()
         {
-            var viewModel = new TestViewModel();    
-            viewModel.Items=CreateItemsList();
+            var viewModel = new TestViewModel {Items = CreateItemsList()};
             return View(viewModel);
         }
 
@@ -38,17 +37,12 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         [HttpPost]
         public ActionResult Create(TestViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                model.Items = CreateItemsList();
+            if (ModelState.IsValid) return RedirectToAction("Index");
+            model.Items = CreateItemsList();
              
-                return View(model);
-            }
-           
+            return View(model);
+
             //do save here
-            return RedirectToAction("Index");
-
-
         }
     }
 }
