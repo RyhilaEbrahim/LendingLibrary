@@ -6,8 +6,9 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using AutoMapper;
 using Chillisoft.LendingLibrary.Core.Domain;
+using Chillisoft.LendingLibrary.DB.Repositories;
 using Chillisoft.LendingLibrary.Web.Models;
-using Chillisoft.LendingLibrary.Web.Repositories;
+using IBorrowerRepository = Chillisoft.LendingLibrary.Core.Interfaces.Repositories.IBorrowerRepository;
 
 namespace Chillisoft.LendingLibrary.Web.Controllers
 {

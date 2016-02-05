@@ -2,19 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Chillisoft.LendingLibrary.Core.Domain;
-using Chillisoft.LendingLibrary.Web.Models;
+using Chillisoft.LendingLibrary.Core.Interfaces.Repositories;
 
-namespace Chillisoft.LendingLibrary.Web.Repositories
+namespace Chillisoft.LendingLibrary.DB.Repositories
 {
-    public interface IBorrowerRepository
-    {
-        void Delete(Borrower borrower);
-        Borrower Get(int id);
-        void Save(Borrower borrower);
-        List<Borrower> GetAll();
-        List<Title> GetAllTitles();
-        Title GetTitleById(int titleId);
-    }
 
     public class BorrowerRepository : IBorrowerRepository
     {
@@ -22,6 +13,7 @@ namespace Chillisoft.LendingLibrary.Web.Repositories
         {
             var borrow = Get(borrower.Id);
             InMemoryDB.Borrowers.Remove(borrow);
+            InMemoryDB.SaveChanges();
         }
 
         public Borrower Get(int id)
@@ -46,6 +38,7 @@ namespace Chillisoft.LendingLibrary.Web.Repositories
                 existingBorrower.Title = borrower.Title;
             }
 
+            InMemoryDB.SaveChanges();
         }
 
         public List<Borrower> GetAll()

@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E472216B-C2C3-4539-88B2-ADA149FA6A72}</ProjectGuid>
+    <ProjectGuid>{32ECBED3-0307-4341-908D-0FDD876BF7A9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Chillisoft.LendingLibrary.Core</RootNamespace>
-    <AssemblyName>Chillisoft.LendingLibrary.Core</AssemblyName>
+    <RootNamespace>Chillisoft.LendingLibrary.DB.Migrations</RootNamespace>
+    <AssemblyName>Chillisoft.LendingLibrary.DB.Migrations</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -31,6 +31,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FluentMigrator, Version=1.6.1.0, Culture=neutral, PublicKeyToken=aacfc7de5acabf05, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentMigrator.1.6.1\lib\40\FluentMigrator.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FluentMigrator.Runner, Version=1.6.1.0, Culture=neutral, PublicKeyToken=aacfc7de5acabf05, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\FluentMigrator.Tools.1.6.1\tools\AnyCPU\40\FluentMigrator.Runner.dll</HintPath>
+    </Reference>
+    <Reference Include="PeanutButter.FluentMigrator, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PeanutButter.FluentMigrator.1.1.28\lib\net40\PeanutButter.FluentMigrator.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -41,12 +53,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Domain\Borrower.cs" />
-    <Compile Include="Domain\Title.cs" />
-    <Compile Include="Interfaces\Repositories\IBorrowerRepository.cs" />
+    <Compile Include="MigrationExtensions.cs" />
+    <Compile Include="Migrations\_201602011633_CreateTableTitles.cs" />
+    <Compile Include="Migrations\_201602011707_PopulateTableTitles.cs" />
+    <Compile Include="Migrations\_201602011712_CreateTableBorrowers.cs" />
+    <Compile Include="Migrations\_201602011724_AlterTableBorrowerAddFK.cs" />
+    <Compile Include="Migrator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="bootstrap.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Chillisoft.LendingLibrary.DB\Chillisoft.LendingLibrary.DB.csproj">
+      <Project>{65c18e2b-145e-4a09-b035-ff6afd09015a}</Project>
+      <Name>Chillisoft.LendingLibrary.DB</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
