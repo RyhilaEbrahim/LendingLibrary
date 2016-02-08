@@ -6,7 +6,8 @@
         public string FirstName { get; set; }
         public string Surname { get; set; }
         public string Email { get; set; }
-        public Title Title { get; set; }
+        public virtual Title Title { get; set; }
+        public int TitleId { get; set; }
          
        
     }

@@ -9,6 +9,14 @@ namespace Chillisoft.LendingLibrary.DB.Repositories
 
     public class BorrowerRepository : IBorrowerRepository
     {
+        private readonly ILendingLibraryDbContext _lendingLibraryDbContext;
+
+        public BorrowerRepository(ILendingLibraryDbContext lendingLibraryDbContext)
+        {
+            if (lendingLibraryDbContext == null) throw new ArgumentNullException(nameof(lendingLibraryDbContext));
+            _lendingLibraryDbContext = lendingLibraryDbContext;
+        }
+
         public void Delete(Borrower borrower)
         {
             var borrow = Get(borrower.Id);
@@ -18,7 +26,7 @@ namespace Chillisoft.LendingLibrary.DB.Repositories
 
         public Borrower Get(int id)
         {
-            return InMemoryDB.Borrowers.FirstOrDefault(borrower => borrower.Id == id);
+            return _lendingLibraryDbContext.Borrowers.FirstOrDefault(borrower => borrower.Id == id);
         }
 
         public void Save(Borrower borrower)
@@ -43,7 +51,7 @@ namespace Chillisoft.LendingLibrary.DB.Repositories
 
         public List<Borrower> GetAll()
         {
-            return InMemoryDB.Borrowers.ToList();
+            return _lendingLibraryDbContext.Borrowers.ToList();
         }
 
         public List<Title> GetAllTitles()

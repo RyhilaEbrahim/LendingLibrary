@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using AutoMapper;
 using Chillisoft.LendingLibrary.Core.Domain;
+using Chillisoft.LendingLibrary.DB;
 using Chillisoft.LendingLibrary.DB.Repositories;
 using Chillisoft.LendingLibrary.Web.Models;
 using IBorrowerRepository = Chillisoft.LendingLibrary.Core.Interfaces.Repositories.IBorrowerRepository;
@@ -19,7 +20,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
 
 
         // GET: BorrowerViewModel
-        public BorrowerController() : this(new BorrowerRepository(), Mapper.Engine)
+        public BorrowerController() : this(new BorrowerRepository(new LendingLibraryDbContext()), Mapper.Engine)
         {
         }
 

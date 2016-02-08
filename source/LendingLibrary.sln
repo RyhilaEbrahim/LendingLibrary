@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chillisoft.LendingLibrary.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chillisoft.LendingLibrary.DB.Tests", "Chillisoft.LendingLibrary.DB.Tests\Chillisoft.LendingLibrary.DB.Tests.csproj", "{49626D95-DE73-4B94-BA93-2AC64BA08938}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chillisoft.LendingLibrary.Tests.Common", "Chillisoft.LendingLibrary.Tests.Common\Chillisoft.LendingLibrary.Tests.Common.csproj", "{305BEB7E-6B9C-41D0-A328-4FBC2081EB05}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{49626D95-DE73-4B94-BA93-2AC64BA08938}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49626D95-DE73-4B94-BA93-2AC64BA08938}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49626D95-DE73-4B94-BA93-2AC64BA08938}.Release|Any CPU.Build.0 = Release|Any CPU
+		{305BEB7E-6B9C-41D0-A328-4FBC2081EB05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{305BEB7E-6B9C-41D0-A328-4FBC2081EB05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{305BEB7E-6B9C-41D0-A328-4FBC2081EB05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{305BEB7E-6B9C-41D0-A328-4FBC2081EB05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
