@@ -8,6 +8,7 @@ namespace Chillisoft.LendingLibrary.DB
     public interface ILendingLibraryDbContext
     {
         int SaveChanges();
+        void AttachEntity(EntityBase entity);
         IDbSet<Borrower> Borrowers { get; set; }
         IDbSet<Title> Titles { get; set; }
     }
@@ -28,6 +29,11 @@ namespace Chillisoft.LendingLibrary.DB
             config.Add(new BorrowerMap());
             config.Add(new TitleMap());
             base.OnModelCreating(modelBuilder);
+        }
+
+        public void AttachEntity(EntityBase entity)
+        {
+            Entry(entity).State = entity.IsNew() ? EntityState.Added : EntityState.Modified;
         }
 
         public IDbSet<Borrower> Borrowers { get; set; }

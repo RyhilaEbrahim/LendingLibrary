@@ -20,8 +20,8 @@ namespace Chillisoft.LendingLibrary.DB.Repositories
         public void Delete(Borrower borrower)
         {
             var borrow = Get(borrower.Id);
-            InMemoryDB.Borrowers.Remove(borrow);
-            InMemoryDB.SaveChanges();
+            _lendingLibraryDbContext.Borrowers.Remove(borrow);
+            _lendingLibraryDbContext.SaveChanges();
         }
 
         public Borrower Get(int id)
@@ -31,22 +31,8 @@ namespace Chillisoft.LendingLibrary.DB.Repositories
 
         public void Save(Borrower borrower)
         {
-            if (borrower.Id == 0)
-            {
-                borrower.Id = InMemoryDB.Borrowers.Count + 1;
-                InMemoryDB.Borrowers.Add(borrower);
-            }
-            else
-            {
-                var existingBorrower = Get(borrower.Id);
-
-                existingBorrower.FirstName = borrower.FirstName;
-                existingBorrower.Surname = borrower.Surname;
-                existingBorrower.Email = borrower.Email;
-                existingBorrower.Title = borrower.Title;
-            }
-
-            InMemoryDB.SaveChanges();
+            _lendingLibraryDbContext.AttachEntity(borrower);
+            _lendingLibraryDbContext.SaveChanges();
         }
 
         public List<Borrower> GetAll()
@@ -56,14 +42,13 @@ namespace Chillisoft.LendingLibrary.DB.Repositories
 
         public List<Title> GetAllTitles()
         {
-            return InMemoryDB.Titles.ToList();
+            return _lendingLibraryDbContext.Titles.ToList();
         }
 
         public Title GetTitleById(int titleId)
         {
-            Predicate<Title> idPredicate = (Title p) => { return p.Id == titleId; };
+            return _lendingLibraryDbContext.Titles.FirstOrDefault(title => title.Id == titleId);
 
-            return InMemoryDB.Titles.Find(idPredicate);
         }
     }
 }

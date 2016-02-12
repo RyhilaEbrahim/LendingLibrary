@@ -24,6 +24,17 @@ namespace Chillisoft.LendingLibrary.Tests.Common.Builders
             this.WithProp(borrower => borrower.TitleId = _titleId);
             return base.Build();
         }
+
+        public BorrowerBuilder WithNewId()
+        {
+            this.WithProp(borrower => borrower.Id = 0);
+            return this;
+        }
+        public BorrowerBuilder WithValidExistingId()
+        {
+            this.WithProp(borrower => borrower.Id = RandomValueGen.GetRandomInt(1,1000));
+            return this;
+        }
     }
 
 }

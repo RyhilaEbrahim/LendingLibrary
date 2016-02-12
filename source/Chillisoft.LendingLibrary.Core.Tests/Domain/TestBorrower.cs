@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Chillisoft.LendingLibrary.Core.Domain;
 using NUnit.Framework;
 using PeanutButter.TestUtils.Generic;
 
-namespace Chillisoft.LendingLibrary.Core.Tests
+namespace Chillisoft.LendingLibrary.Core.Tests.Domain
 {
     [TestFixture]
     public class TestBorrower

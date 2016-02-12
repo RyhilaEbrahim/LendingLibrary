@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\Borrower.cs" />
+    <Compile Include="Domain\EntityBase.cs" />
     <Compile Include="Domain\Title.cs" />
     <Compile Include="Interfaces\Repositories\IBorrowerRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -18,7 +18,7 @@ namespace Chillisoft.LendingLibrary.Tests.Common.Builders
             _borrower = borrowers.ToList();
             return this;
         }
-        public TestDbContextBuilder WithTitle(params Title[] titles)
+        public TestDbContextBuilder WithTitles(params Title[] titles)
         {
             _title = titles.ToList();
             return this;
