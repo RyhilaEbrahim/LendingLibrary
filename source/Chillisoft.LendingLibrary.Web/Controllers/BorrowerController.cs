@@ -34,7 +34,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         {
             var borrowers = _borrowerRepository.GetAll();
             var borrowerViewModels = _mappingEngine.Map<IEnumerable<BorrowerViewModel>>(borrowers);
-            return View(borrowerViewModels);
+            return View("Index", borrowerViewModels);
         }
 
       
@@ -44,6 +44,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
             var borrower = _borrowerRepository.Get(id);
             var borrowViewModel = _mappingEngine.Map<BorrowerViewModel>(borrower);
             return View(borrowViewModel);
+            
         }
 
         // GET: BorrowerViewModel/Create
