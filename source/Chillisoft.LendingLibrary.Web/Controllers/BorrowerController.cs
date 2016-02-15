@@ -66,18 +66,11 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         [HttpPost]
         public ActionResult Create(BorrowerViewModel viewModel)
         {
-            try
-            {
-                var borrower = _mappingEngine.Map<Borrower>(viewModel);
-                var title = _borrowerRepository.GetTitleById(viewModel.TitleId);
-                borrower.Title = title;
-                _borrowerRepository.Save(borrower);
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            var borrower = _mappingEngine.Map<Borrower>(viewModel);
+            var title = _borrowerRepository.GetTitleById(viewModel.TitleId);
+            borrower.Title = title;
+            _borrowerRepository.Save(borrower);
+            return RedirectToAction("Index");
         }
 
 

@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Web.Routing;
 using System.Web.Mvc;
 using AutoMapper;
 using Chillisoft.LendingLibrary.Core.Domain;
 using Chillisoft.LendingLibrary.Core.Interfaces.Repositories;
 using Chillisoft.LendingLibrary.Tests.Common.Builders;
+using Chillisoft.LendingLibrary.Tests.Common.Extensions;
 using Chillisoft.LendingLibrary.Web.Controllers;
 using Chillisoft.LendingLibrary.Web.Models;
 using NSubstitute;
@@ -47,7 +49,7 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
             repository.GetAll().Returns(borrowers);
 
             var mapper = Substitute.For<IMappingEngine>();
-            var borrowerViewModels = new List<BorrowerViewModel>() { new BorrowerViewModel()};
+            var borrowerViewModels = new List<BorrowerViewModel>() { new BorrowerViewModel() };
             mapper.Map<IEnumerable<BorrowerViewModel>>(borrowers).Returns(borrowerViewModels);
 
             var borrowerController = CreateBuilder()
@@ -65,35 +67,7 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
             Assert.AreEqual(1, model.Count());
 
         }
-//
-//        [Test]
-//        public void Index_GivenUserId_ShouldReturnBorrowersDetails()
-//        {
-//            //---------------Set up test pack-------------------
-//            var borrowers = new List<Borrower>
-//            {
-//                new BorrowerBuilder().WithRandomProps().Build(),
-//            };
-//            var repository = Substitute.For<IBorrowerRepository>();
-//            repository.GetAll().Returns(borrowers);
-//
-//            var mapper = Substitute.For<IMappingEngine>();
-//            var borrowerViewModels = new List<BorrowerViewModel>() { new BorrowerViewModel()};
-//            mapper.Map<BorrowerViewModel>(borrowers);
-//
-//            var borrowerController = CreateBuilder()
-//                .WithBorrowerRepository(repository)
-//                .WithMappingEngine(mapper)
-//                .Build();
-//            //---------------Assert Precondition----------------
-//            //---------------Execute Test ----------------------
-//            var result = borrowerController.Details(5) as ViewResult;
-//            //---------------Test Result -----------------------
-//            Assert.IsNotNull(result);
-//            var model = result.Model as BorrowerViewModel;
-//            Assert.IsNotNull(model);
-//             }
-//        
+
         [Test]
         public void Details_ShouldReturnViewResult()
         {
@@ -106,6 +80,167 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
             //---------------Test Result -----------------------
             Assert.IsNotNull(result);
         }
+
+
+        [Test]
+        public void Details_GivenValidUserId_ShouldReturnBorrowersDetails()
+        {
+            //---------------Set up test pack-------------------
+
+            var borrower = new BorrowerBuilder().WithRandomProps().Build();
+            var id = borrower.Id;
+
+            var repository = Substitute.For<IBorrowerRepository>();
+            repository.Get(id).Returns(borrower);
+
+            var mapper = Substitute.For<IMappingEngine>();
+            var borrowerViewModel = new BorrowerViewModel { Id = RandomValueGen.GetRandomInt() };
+            mapper.Map<BorrowerViewModel>(borrower).Returns(borrowerViewModel);
+
+            var borrowerController = CreateBuilder()
+                .WithBorrowerRepository(repository)
+                .WithMappingEngine(mapper)
+                .Build();
+            //---------------Assert Precondition----------------
+            //---------------Execute Test ----------------------
+            var result = borrowerController.Details(id) as ViewResult;
+            //---------------Test Result -----------------------
+            Assert.IsNotNull(result);
+            var model = result.Model as BorrowerViewModel;
+            Assert.IsNotNull(model);
+        }
+
+        [Test]
+        public void Create_GET_ShouldReturnViewResultWithTitles()
+        {
+            var repository = Substitute.For<IBorrowerRepository>();
+            var title = new Title { Id=RandomValueGen.GetRandomInt(), Description = RandomValueGen.GetRandomString()};
+            var titles = new List<Title> {title};
+            repository.GetAllTitles().Returns(titles);
+            var borrowerController = CreateBuilder()
+                .WithBorrowerRepository(repository)
+                .Build();
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            var result = borrowerController.Create() as ViewResult;
+            //---------------Test Result -----------------------
+            Assert.IsNotNull(result);
+            var model = result.Model as BorrowerViewModel;
+            Assert.IsNotNull(model);
+            Assert.IsInstanceOf<List<SelectListItem>>(model.TitlesSelectList);
+            Assert.AreEqual(1, model.TitlesSelectList.Count);
+            var selectListItem = model.TitlesSelectList.First();
+            Assert.AreEqual(title.Id.ToString(), selectListItem.Value);
+            Assert.AreEqual(title.Description, selectListItem.Text);
+        }
+
+        [Test]
+        public void Create_POST_ShouldHaveHttpPostAttribute()
+        {
+            var borrowerController = new BorrowerController();
+            borrowerController.ShouldHaveAttribute<HttpPostAttribute>(() => borrowerController.Create((BorrowerViewModel)null));
+
+        }
+
+        [Test]
+        public void Create_POST_ShouldCallSaveAndRedirectToIndex()
+        {
+            var borrower = new BorrowerBuilder().WithRandomProps().Build();
+            var repository = Substitute.For<IBorrowerRepository>();
+            var title = TitleBuilder.BuildRandom();
+            repository.GetTitleById(borrower.TitleId).Returns(title);
+
+            var mapper = Substitute.For<IMappingEngine>();
+            var borrowerViewModel = new BorrowerViewModel ();
+            mapper.Map<Borrower>(borrowerViewModel).Returns(borrower);
+            var borrowerController = CreateBuilder()
+                .WithBorrowerRepository(repository)
+                .WithMappingEngine(mapper)
+                .Build();
+            //---------------Assert Precondition----------------
+            //---------------Execute Test ----------------------
+            var result = borrowerController.Create(borrowerViewModel) as RedirectToRouteResult;
+
+            //---------------Test Result -----------------------
+            Assert.AreSame(title, borrower.Title);
+            repository.Received().Save(borrower);
+
+            Assert.IsNotNull(result);
+            var actionName = result.RouteValues["action"];
+            Assert.AreEqual("Index", actionName);
+        }
+
+        [Test]
+        public void Edit_GivenValidBorrowerId_ShouldReturnBorrowerViewModelWithTitles()
+        {
+            //---------------Set up test pack-------------------
+            var borrower = new BorrowerBuilder().WithRandomProps().Build();
+            var id = borrower.Id;
+
+            var repository = Substitute.For<IBorrowerRepository>();
+            repository.Get(id).Returns(borrower);
+            var title = new Title { Id = RandomValueGen.GetRandomInt(), Description = RandomValueGen.GetRandomString() };
+            var titles = new List<Title> { title };
+            repository.GetAllTitles().Returns(titles);
+
+            var mapper = Substitute.For<IMappingEngine>();
+            var borrowerViewModel = new BorrowerViewModel { Id = RandomValueGen.GetRandomInt() };
+
+         
+            mapper.Map<BorrowerViewModel>(borrower).Returns(borrowerViewModel);
+            var borrowerController = CreateBuilder()
+                .WithBorrowerRepository(repository)
+                .WithMappingEngine(mapper)
+                .Build();
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            var result = borrowerController.Edit(id) as ViewResult;
+            //---------------Test Result -----------------------
+            Assert.IsNotNull(result);
+            var model = result.Model as BorrowerViewModel;
+            Assert.IsNotNull(model);
+            Assert.AreEqual(1,model.TitlesSelectList.Count);
+        }
+
+        [Test]
+        public void Edit_GivenValidBorrowerId_ShouldReturnBorrowerViewModelWithTitlesSelected()
+        {
+            //---------------Set up test pack-------------------
+            var borrower = new BorrowerBuilder().WithRandomProps().Build();
+            var id = borrower.Id;
+
+            var repository = Substitute.For<IBorrowerRepository>();
+            repository.Get(id).Returns(borrower);
+            var title = new Title { Id = RandomValueGen.GetRandomInt(), Description = RandomValueGen.GetRandomString() };
+            var titles = new List<Title> { title };
+            repository.GetAllTitles().Returns(titles);
+
+            var mapper = Substitute.For<IMappingEngine>();
+            var titleId = title.Id;
+            var borrowerViewModel = new BorrowerViewModel { Id = RandomValueGen.GetRandomInt() ,TitleId = borrower.TitleId=titleId};
+
+         
+            mapper.Map<BorrowerViewModel>(borrower).Returns(borrowerViewModel);
+            var borrowerController = CreateBuilder()
+                .WithBorrowerRepository(repository)
+                .WithMappingEngine(mapper)
+                .Build();
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            var result = borrowerController.Edit(id) as ViewResult;
+            //---------------Test Result -----------------------
+            Assert.IsNotNull(result);
+            var model = result.Model as BorrowerViewModel;
+            Assert.IsNotNull(model);
+            Assert.AreEqual(1,model.TitlesSelectList.Count);
+            Assert.AreEqual(model.TitleId,titleId);
+
+        }
+
+
 
         public BorrowerControllerBuilder CreateBuilder()
         {
@@ -122,7 +257,7 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
                 _borrowerRepository = borrowerRepository;
                 return this;
             }
-            public BorrowerControllerBuilder WithMappingEngine(IMappingEngine  mappingEngine)
+            public BorrowerControllerBuilder WithMappingEngine(IMappingEngine mappingEngine)
             {
                 _mappingEngine = mappingEngine;
                 return this;
