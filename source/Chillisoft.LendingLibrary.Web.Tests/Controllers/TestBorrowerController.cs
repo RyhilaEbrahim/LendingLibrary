@@ -213,16 +213,19 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
 
             var repository = Substitute.For<IBorrowerRepository>();
             repository.Get(id).Returns(borrower);
-            var title = new Title { Id = RandomValueGen.GetRandomInt(), Description = RandomValueGen.GetRandomString() };
-            var titles = new List<Title> { title };
+
+            var title1 = new Title { Id = RandomValueGen.GetRandomInt(), Description = RandomValueGen.GetRandomString() };
+            var title2 = new Title { Id = RandomValueGen.GetRandomInt(), Description = RandomValueGen.GetRandomString() };
+            var title3 = new Title { Id = RandomValueGen.GetRandomInt(), Description = RandomValueGen.GetRandomString() };
+            var titles = new List<Title> { title1, title2, title3 };
+
             repository.GetAllTitles().Returns(titles);
 
             var mapper = Substitute.For<IMappingEngine>();
-            var titleId = title.Id;
-            var borrowerViewModel = new BorrowerViewModel { Id = RandomValueGen.GetRandomInt() ,TitleId = borrower.TitleId=titleId};
-
-         
+            var titleId = title1.Id;
+            var borrowerViewModel = new BorrowerViewModel { Id = RandomValueGen.GetRandomInt() ,TitleId = title2.Id};         
             mapper.Map<BorrowerViewModel>(borrower).Returns(borrowerViewModel);
+
             var borrowerController = CreateBuilder()
                 .WithBorrowerRepository(repository)
                 .WithMappingEngine(mapper)
@@ -235,8 +238,12 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
             Assert.IsNotNull(result);
             var model = result.Model as BorrowerViewModel;
             Assert.IsNotNull(model);
-            Assert.AreEqual(1,model.TitlesSelectList.Count);
-            Assert.AreEqual(model.TitleId,titleId);
+            Assert.AreEqual(3,model.TitlesSelectList.Count);
+
+            var selectListItem2 = model.TitlesSelectList[1];
+            Assert.AreEqual(title2.Id.ToString(), selectListItem2.Value);
+            Assert.AreEqual(title2.Description, selectListItem2.Text);
+            Assert.IsTrue(selectListItem2.Selected);
 
         }
 
