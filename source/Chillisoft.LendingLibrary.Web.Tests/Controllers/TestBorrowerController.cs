@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Routing;
 using System.Web.Mvc;
@@ -214,15 +215,15 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
             var repository = Substitute.For<IBorrowerRepository>();
             repository.Get(id).Returns(borrower);
 
-            var title1 = new Title { Id = RandomValueGen.GetRandomInt(), Description = RandomValueGen.GetRandomString() };
-            var title2 = new Title { Id = RandomValueGen.GetRandomInt(), Description = RandomValueGen.GetRandomString() };
-            var title3 = new Title { Id = RandomValueGen.GetRandomInt(), Description = RandomValueGen.GetRandomString() };
+            var title1 = TitleBuilder.BuildRandom();
+            var title2 = TitleBuilder.BuildRandom();
+            var title3 = TitleBuilder.BuildRandom();
             var titles = new List<Title> { title1, title2, title3 };
 
             repository.GetAllTitles().Returns(titles);
 
             var mapper = Substitute.For<IMappingEngine>();
-            var titleId = title1.Id;
+
             var borrowerViewModel = new BorrowerViewModel { Id = RandomValueGen.GetRandomInt() ,TitleId = title2.Id};         
             mapper.Map<BorrowerViewModel>(borrower).Returns(borrowerViewModel);
 
@@ -247,9 +248,68 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
 
         }
 
+        [Test]
+        public void Delete_GivenBorrowerViewModel_ShouldMapToBorrowerAndDelete()
+        {
+            //---------------Set up test pack-------------------
+            var borrowerViewModel = new BorrowerViewModel();
+            var borrower = BorrowerBuilder.BuildRandom();
+            var mappingEngine = Substitute.For<IMappingEngine>();
+            mappingEngine.Map<Borrower>(borrowerViewModel).Returns(borrower);
 
+            var borrowerRepository = Substitute.For<IBorrowerRepository>();
+            var borrowerController = CreateBuilder()
+                .WithMappingEngine(mappingEngine)
+                .WithBorrowerRepository(borrowerRepository)
+                .Build();
 
-        public BorrowerControllerBuilder CreateBuilder()
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            var result = borrowerController.Delete(borrowerViewModel);
+            //---------------Test Result -----------------------
+            Assert.IsNotNull(result);
+            borrowerRepository.Received(1).Delete(borrower);
+            
+        }
+
+        [Test]
+        public void Delete_GivenBorrowerViewModel_ShouldRedirectToIndexAfterDelete()
+        {
+            //---------------Set up test pack-------------------
+            var borrowerViewModel = new BorrowerViewModel();
+            var borrowerController = CreateBuilder()
+               .Build();
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            var result = borrowerController.Delete(borrowerViewModel) as RedirectToRouteResult;
+            //---------------Test Result -----------------------
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Index",result.RouteValues["action"]);
+        }
+
+        [Test]
+        public void Delete_GivenExceptionWhenRepositoryDeleteIsCalled_ShouldReturnView()
+        {
+            //---------------Set up test pack-------------------
+            var borrowerViewModel = new BorrowerViewModel();
+
+            var borrowerRepository = Substitute.For<IBorrowerRepository>();
+            borrowerRepository.When(repository => repository.Delete(Arg.Any<Borrower>()))
+                .Throw<ApplicationException>();
+
+            var borrowerController = CreateBuilder()
+                .WithBorrowerRepository(borrowerRepository)
+                .Build();
+            //---------------Assert Precondition----------------
+            //---------------Execute Test ----------------------
+            var result = borrowerController.Delete(borrowerViewModel) as ViewResult;
+            //---------------Test Result -----------------------
+            Assert.IsNotNull(result);
+       }
+
+        private BorrowerControllerBuilder CreateBuilder()
         {
             return new BorrowerControllerBuilder();
         }

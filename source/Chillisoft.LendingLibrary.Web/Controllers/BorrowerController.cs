@@ -115,7 +115,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
 
         // POST: BorrowerViewModel/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id,BorrowerViewModel viewModel)
+        public ActionResult Delete(BorrowerViewModel viewModel)
         {
             try
             {
