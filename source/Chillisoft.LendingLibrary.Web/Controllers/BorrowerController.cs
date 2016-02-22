@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -64,8 +65,13 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
 
         // POST: BorrowerViewModel/Create
         [HttpPost]
-        public ActionResult Create(BorrowerViewModel viewModel)
+        public ActionResult Create(BorrowerViewModel viewModel, HttpPostedFileBase file = null)
         {
+            if (file != null)
+            {
+                var photo = ReadFully(file.InputStream);
+                viewModel.Photo = photo;
+            }
             var borrower = _mappingEngine.Map<Borrower>(viewModel);
             var title = _borrowerRepository.GetTitleById(viewModel.TitleId);
             borrower.Title = title;
@@ -73,6 +79,14 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
             return RedirectToAction("Index");
         }
 
+        public static byte[] ReadFully(Stream input)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                input.CopyTo(ms);
+                return ms.ToArray();
+            }
+        }
 
         // GET: BorrowerViewModel/Edit/5
         public ActionResult Edit(int id)

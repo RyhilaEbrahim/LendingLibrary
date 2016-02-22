@@ -8,6 +8,8 @@
         public string Email { get; set; }
         public virtual Title Title { get; set; }
         public int TitleId { get; set; }
+        public string ContactNumber { get; set; }
+        public byte[] Photo { get; set; }
          
        
     }

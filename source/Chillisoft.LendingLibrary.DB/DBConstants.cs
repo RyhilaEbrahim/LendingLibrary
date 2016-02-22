@@ -29,6 +29,8 @@
                     public const string FirstName = "FirstName";
                     public const string Surname = "Surname";
                     public const string Email = "Email";
+                    public const string ContactNumber = "ContactNumber";
+                    public const string Photo = "Photo";
                    }
 
             }

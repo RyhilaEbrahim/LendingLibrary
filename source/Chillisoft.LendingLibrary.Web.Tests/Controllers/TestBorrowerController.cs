@@ -140,7 +140,7 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
         public void Create_POST_ShouldHaveHttpPostAttribute()
         {
             var borrowerController = new BorrowerController();
-            borrowerController.ShouldHaveAttribute<HttpPostAttribute>(() => borrowerController.Create((BorrowerViewModel)null));
+            borrowerController.ShouldHaveAttribute<HttpPostAttribute>(() => borrowerController.Create((BorrowerViewModel)null,null));
 
         }
 

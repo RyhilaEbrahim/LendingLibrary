@@ -20,6 +20,8 @@ namespace Chillisoft.LendingLibrary.Web.Models
         [DisplayName("Title")]
         public string TitleDescription { get; set; }
         public List<SelectListItem> TitlesSelectList { get; set; }
+        public string ContactNumber { get; set; }
+        public byte[] Photo { get; set; }
 
     }
 }

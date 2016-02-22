@@ -19,6 +19,8 @@ namespace Chillisoft.LendingLibrary.DB.Mappings
             this.Property(p => p.FirstName).HasColumnName(_Borrower.Columns.FirstName);
             this.Property(p => p.Surname).HasColumnName(_Borrower.Columns.Surname);
             this.Property(p => p.Email).HasColumnName(_Borrower.Columns.Email);
+            this.Property(p => p.ContactNumber).HasColumnName(_Borrower.Columns.ContactNumber);
+            this.Property(p => p.Photo).HasColumnName(_Borrower.Columns.Photo);
           
         }
     }
