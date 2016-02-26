@@ -11,5 +11,6 @@ namespace Chillisoft.LendingLibrary.Core.Interfaces.Repositories
         List<Borrower> GetAll();
         List<Title> GetAllTitles();
         Title GetTitleById(int titleId);
+        byte[] GetPhoto(int id);
     }
 }

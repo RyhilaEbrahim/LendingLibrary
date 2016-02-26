@@ -59,6 +59,7 @@
     <Compile Include="Migrations\_201602011712_CreateTableBorrowers.cs" />
     <Compile Include="Migrations\_201602011724_AlterTableBorrowerAddFK.cs" />
     <Compile Include="Migrations\_201602221731_AlterTableBorrower.cs" />
+    <Compile Include="Migrations\_201602261539_AlterTableBorrowerAddColumn.cs" />
     <Compile Include="Migrator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

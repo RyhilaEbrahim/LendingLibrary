@@ -12,5 +12,13 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         {
             return View();
         }
+        public ActionResult Test()
+        {
+            return View();
+        }
+        public ActionResult TestResult(FormCollection formsCollection)
+        {
+            return View("Test");
+        }
     }
 }

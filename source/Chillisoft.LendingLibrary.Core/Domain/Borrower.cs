@@ -10,6 +10,7 @@
         public int TitleId { get; set; }
         public string ContactNumber { get; set; }
         public byte[] Photo { get; set; }
+        public string ContentType{ get; set; }
          
        
     }

@@ -22,6 +22,7 @@ namespace Chillisoft.LendingLibrary.Web.Models
         public List<SelectListItem> TitlesSelectList { get; set; }
         public string ContactNumber { get; set; }
         public byte[] Photo { get; set; }
+      
 
     }
 }

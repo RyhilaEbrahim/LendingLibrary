@@ -48,7 +48,12 @@ namespace Chillisoft.LendingLibrary.DB.Repositories
         public Title GetTitleById(int titleId)
         {
             return _lendingLibraryDbContext.Titles.FirstOrDefault(title => title.Id == titleId);
+        }
 
+        public byte[] GetPhoto(int id)
+        {
+            var borrower = _lendingLibraryDbContext.Borrowers.FirstOrDefault(b => b.Id==id);
+            return borrower?.Photo;
         }
     }
 }

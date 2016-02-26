@@ -71,10 +71,12 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
             {
                 var photo = ReadFully(file.InputStream);
                 viewModel.Photo = photo;
+              
             }
             var borrower = _mappingEngine.Map<Borrower>(viewModel);
             var title = _borrowerRepository.GetTitleById(viewModel.TitleId);
             borrower.Title = title;
+            if (file != null) borrower.ContentType = file.ContentType.ToLower();
             _borrowerRepository.Save(borrower);
             return RedirectToAction("Index");
         }
@@ -101,16 +103,22 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
 
         // POST: BorrowerViewModel/Edit/5
         [HttpPost]
-        public ActionResult Edit(BorrowerViewModel viewModel)
+        public ActionResult Edit(BorrowerViewModel viewModel, HttpPostedFileBase file = null)
         {
             try
             {
+                if (file != null)
+                {
+                    var photo = ReadFully(file.InputStream);
+                    viewModel.Photo = photo;
+
+                }
                 var borrower = _mappingEngine.Map<Borrower>(viewModel);
                 var title = _borrowerRepository.GetTitleById(viewModel.TitleId);
                 borrower.Title = title;
-
+                if (file != null) borrower.ContentType = file.ContentType.ToLower();
                 _borrowerRepository.Save(borrower);
-
+               
                 return RedirectToAction("Index");
             }
             catch

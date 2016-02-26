@@ -31,9 +31,11 @@
                     public const string Email = "Email";
                     public const string ContactNumber = "ContactNumber";
                     public const string Photo = "Photo";
+                    public const string ContentType = "ContentType";
                    }
 
             }
+          
         }
     }
 }
