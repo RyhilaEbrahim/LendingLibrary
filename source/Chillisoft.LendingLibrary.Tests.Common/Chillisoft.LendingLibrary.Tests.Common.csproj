@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builders\BorrowerBuilder.cs" />
+    <Compile Include="Builders\ItemBuilder.cs" />
     <Compile Include="Builders\TestDbContextBuilder.cs" />
     <Compile Include="Builders\TitleBuilder.cs" />
     <Compile Include="Extensions\NSubstituteDbSetExtensions.cs" />

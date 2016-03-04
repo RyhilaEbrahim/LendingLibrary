@@ -94,9 +94,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\Ioc\AutoMapper\TestBorrowerProfile.cs" />
     <Compile Include="Controllers\TestBorrowerController.cs" />
     <Compile Include="Controllers\TestingTestController.cs" />
     <Compile Include="Controllers\TestHomeController.cs" />
+    <Compile Include="Controllers\TestItemController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -123,6 +125,7 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

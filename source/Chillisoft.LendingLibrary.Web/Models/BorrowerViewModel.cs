@@ -15,13 +15,14 @@ namespace Chillisoft.LendingLibrary.Web.Models
         public string Surname { get; set; }
         [Required]
         public string Email { get; set; }
-        [DisplayName("Title")]
+        [DisplayName("TitleId")]
         public int TitleId { get; set; }
         [DisplayName("Title")]
         public string TitleDescription { get; set; }
         public List<SelectListItem> TitlesSelectList { get; set; }
         public string ContactNumber { get; set; }
         public byte[] Photo { get; set; }
+        
       
 
     }

@@ -11,6 +11,7 @@ namespace Chillisoft.LendingLibrary.DB
         void AttachEntity(EntityBase entity);
         IDbSet<Borrower> Borrowers { get; set; }
         IDbSet<Title> Titles { get; set; }
+        IDbSet<Item> Items { get; set; }
     }
 
     public class LendingLibraryDbContext : DbContext, ILendingLibraryDbContext
@@ -28,6 +29,7 @@ namespace Chillisoft.LendingLibrary.DB
             var config = modelBuilder.Configurations;
             config.Add(new BorrowerMap());
             config.Add(new TitleMap());
+            config.Add(new ItemMap());
             base.OnModelCreating(modelBuilder);
         }
 
@@ -38,5 +40,6 @@ namespace Chillisoft.LendingLibrary.DB
 
         public IDbSet<Borrower> Borrowers { get; set; }
         public IDbSet<Title> Titles { get; set; }
+        public IDbSet<Item> Items { get; set; }
     }
 }

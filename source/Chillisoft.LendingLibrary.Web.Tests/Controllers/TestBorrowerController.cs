@@ -18,10 +18,12 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
     [TestFixture]
     public class TestBorrowerController
     {
+        private readonly IBorrowerRepository _borrowerRepository;
+        private readonly IMappingEngine _mappingEngine;
         [Test]
         public void Construct()
         {
-            Assert.DoesNotThrow(() => new BorrowerController());
+            Assert.DoesNotThrow(() => new BorrowerController(_borrowerRepository,_mappingEngine));
         }
 
         [Test]
@@ -138,7 +140,7 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
         [Test]
         public void Create_POST_ShouldHaveHttpPostAttribute()
         {
-            var borrowerController = new BorrowerController();
+            var borrowerController = new BorrowerController(_borrowerRepository,_mappingEngine);
             borrowerController.ShouldHaveAttribute<HttpPostAttribute>(() => borrowerController.Create((BorrowerViewModel)null,null));
 
         }

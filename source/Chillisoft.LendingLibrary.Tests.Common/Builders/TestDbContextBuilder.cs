@@ -12,6 +12,7 @@ namespace Chillisoft.LendingLibrary.Tests.Common.Builders
     {
         private List<Borrower> _borrower = new List<Borrower>();
         private List<Title> _title = new List<Title>();
+        private List<Item> _item = new List<Item>();
 
         public TestDbContextBuilder WithBorrowers(params Borrower[] borrowers)
         {
@@ -22,6 +23,10 @@ namespace Chillisoft.LendingLibrary.Tests.Common.Builders
         {
             _title = titles.ToList();
             return this;
+        }public TestDbContextBuilder WithItems (params Item[] items)
+        {
+            _item = items.ToList();
+            return this;
         }
         
         public ILendingLibraryDbContext Build()
@@ -29,9 +34,18 @@ namespace Chillisoft.LendingLibrary.Tests.Common.Builders
             var lendingLibraryDbContext = Substitute.For<ILendingLibraryDbContext>();
             SetupTitles(lendingLibraryDbContext);
             SetupBorrowers(lendingLibraryDbContext);
+            SetUpItems(lendingLibraryDbContext);
             return lendingLibraryDbContext;
         }
 
+        private void SetUpItems(ILendingLibraryDbContext lendingLibraryDbContext)
+        {
+            if (_item != null)
+            {
+                var set = GetSubstituteDbSet<Item>().SetupData(_item);
+                lendingLibraryDbContext.Items.Returns(set);
+            }
+        }
         private void SetupBorrowers(ILendingLibraryDbContext lendingLibraryDbContext)
         {
             if (_borrower != null)

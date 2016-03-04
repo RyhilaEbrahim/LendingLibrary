@@ -21,10 +21,6 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
 
 
         // GET: BorrowerViewModel
-        public BorrowerController() : this(new BorrowerRepository(new LendingLibraryDbContext()), Mapper.Engine)
-        {
-        }
-
         public BorrowerController(IBorrowerRepository borrowerRepository, IMappingEngine mappingEngine)
         {
             _borrowerRepository = borrowerRepository;
