@@ -214,6 +214,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\Bootstrappers\AutoMapper\BorrowerItemProfile.cs" />
     <Compile Include="App_Start\Bootstrappers\WindsorBootstrapper.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -230,6 +231,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BorrowerController.cs" />
+    <Compile Include="Controllers\BorrowerItemController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ImageController.cs" />
     <Compile Include="Controllers\ItemController.cs" />
@@ -239,6 +241,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Controllers\AccountViewModels.cs" />
+    <Compile Include="Models\BorrowerItemViewModel.cs" />
     <Compile Include="Models\BorrowerViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ItemViewModel.cs" />
@@ -321,6 +324,8 @@
     <Content Include="Views\Item\Edit.cshtml" />
     <Content Include="Views\Item\Details.cshtml" />
     <Content Include="Views\Item\Delete.cshtml" />
+    <Content Include="Views\BorrowerItem\Index.cshtml" />
+    <Content Include="Views\BorrowerItem\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

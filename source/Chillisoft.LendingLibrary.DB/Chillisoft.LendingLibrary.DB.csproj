@@ -59,9 +59,11 @@
     <Compile Include="JsonHelpers.cs" />
     <Compile Include="LendingLibraryDbContext.cs" />
     <Compile Include="Mappings\BorrowerMap.cs" />
+    <Compile Include="Mappings\BorrowersItemMap.cs" />
     <Compile Include="Mappings\ItemMap.cs" />
     <Compile Include="Mappings\TitleMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\BorrowerItemRepository.cs" />
     <Compile Include="Repositories\BorrowerRepository.cs" />
     <Compile Include="Repositories\ItemRepository.cs" />
   </ItemGroup>

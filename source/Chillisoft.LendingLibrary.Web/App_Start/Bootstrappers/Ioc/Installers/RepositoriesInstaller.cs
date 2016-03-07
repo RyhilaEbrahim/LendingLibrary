@@ -16,6 +16,9 @@ namespace Chillisoft.LendingLibrary.Web.Bootstrappers.Ioc.Installers
             container.Register(Component.For<IItemRepository>()
                 .ImplementedBy<ItemRepository>()
                 .LifestylePerWebRequest());
+            container.Register(Component.For<IBorrowerItemRepository>()
+                .ImplementedBy<BorrowerItemRepository>()
+                .LifestylePerWebRequest());
         }
     }
 }

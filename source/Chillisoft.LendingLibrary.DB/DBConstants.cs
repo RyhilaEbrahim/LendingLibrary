@@ -47,6 +47,21 @@
                    }
 
             }
+          public class BorrowersItem
+            {
+                public const string TableName = "BorrowersItem";
+
+                public class Columns
+                {
+                    public const string BorrowersItemId = "BorrowersItemId";
+                    public const string BorrowerId = "BorrowerId";
+                    public const string ItemId = "ItemId";
+                    public const string DateBorrowed = "DateBorrowed";
+                    public const string DateReturned = "DateReturned";
+                 
+                   }
+
+            }
           
         }
     }
