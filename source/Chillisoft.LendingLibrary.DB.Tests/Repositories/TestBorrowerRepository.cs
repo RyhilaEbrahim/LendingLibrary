@@ -145,12 +145,9 @@ namespace Chillisoft.LendingLibrary.DB.Tests.Repositories
             //---------------Set up test pack-------------------
             var title1 = new TitleBuilder()
                 .WithRandomProps().Build();
-
-
             var dbContext = new TestDbContextBuilder()
                 .WithTitles(title1)
                 .Build();
-
             var repository = new BorrowerRepository(dbContext);
             //---------------Assert Precondition----------------
             //---------------Execute Test ----------------------

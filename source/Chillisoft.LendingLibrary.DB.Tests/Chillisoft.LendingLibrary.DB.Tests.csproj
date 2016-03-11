@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="DomainPersistence\TestBorrowerPersistence.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\TestBorrowerItemRepository.cs" />
     <Compile Include="Repositories\TestBorrowerRepository.cs" />
     <Compile Include="Repositories\TestItemBorrower.cs" />
   </ItemGroup>

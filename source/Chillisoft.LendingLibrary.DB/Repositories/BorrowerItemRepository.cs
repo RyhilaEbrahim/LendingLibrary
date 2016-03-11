@@ -27,8 +27,8 @@ namespace Chillisoft.LendingLibrary.DB.Repositories
         public BorrowersItem Get(int id)
         {
             return _lendingLibraryDbContext.BorrowersItems
-               .Include(client => client.Borrower)
-               .Include(client => client.Item)
+               .Include(item => item.Borrower)
+               .Include(item => item.Item)
                .FirstOrDefault(x => x.Id == id);
         }
 

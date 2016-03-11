@@ -13,6 +13,7 @@ namespace Chillisoft.LendingLibrary.Tests.Common.Builders
         private List<Borrower> _borrower = new List<Borrower>();
         private List<Title> _title = new List<Title>();
         private List<Item> _item = new List<Item>();
+        private List<BorrowersItem> _borrowerItems = new List<BorrowersItem>();
 
         public TestDbContextBuilder WithBorrowers(params Borrower[] borrowers)
         {
@@ -23,12 +24,17 @@ namespace Chillisoft.LendingLibrary.Tests.Common.Builders
         {
             _title = titles.ToList();
             return this;
-        }public TestDbContextBuilder WithItems (params Item[] items)
+        }
+        public TestDbContextBuilder WithItems (params Item[] items)
         {
             _item = items.ToList();
             return this;
         }
-        
+        public TestDbContextBuilder WithBorrowerItem (params BorrowersItem[] borrowerItems)
+        {
+            _borrowerItems = borrowerItems.ToList();
+            return this;
+        }
         public ILendingLibraryDbContext Build()
         {
             var lendingLibraryDbContext = Substitute.For<ILendingLibraryDbContext>();
@@ -44,6 +50,14 @@ namespace Chillisoft.LendingLibrary.Tests.Common.Builders
             {
                 var set = GetSubstituteDbSet<Item>().SetupData(_item);
                 lendingLibraryDbContext.Items.Returns(set);
+            }
+        }
+        private void SetUpBorrowerItems(ILendingLibraryDbContext lendingLibraryDbContext)
+        {
+            if (_item != null)
+            {
+                var set = GetSubstituteDbSet<BorrowersItem>().SetupData(_borrowerItems);
+                lendingLibraryDbContext.BorrowersItems.Returns(set);
             }
         }
         private void SetupBorrowers(ILendingLibraryDbContext lendingLibraryDbContext)

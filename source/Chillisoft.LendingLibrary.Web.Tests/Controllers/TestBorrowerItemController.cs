@@ -25,7 +25,7 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
         [Test]
         public void Construct()
         {
-            Assert.DoesNotThrow(() => new BorrowerItemController(_borrowerItemRepository, _mappingEngine, _borrowerRepository, _itemRepository));
+            Assert.DoesNotThrow(() => new BorrowerItemController(Substitute.For<IBorrowerItemRepository>(),Substitute.For<IMappingEngine>(), Substitute.For<IBorrowerRepository>(),Substitute.For<IItemRepository>()));
         }
 
         [Test]
@@ -121,7 +121,7 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
             borrowerController.ShouldHaveAttribute<HttpPostAttribute>(() => borrowerController.Create((BorrowerItemViewModel)_borrowerItemRepository));
 
         }
-//
+
 //        [Test]
 //        public void Create_POST_ShouldCallSaveAndRedirectToIndex()
 //        {
@@ -135,7 +135,9 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
 //            var borrower = BorrowerBuilder.BuildRandom();
 //            var item = ItemBuilder.BuildRandom();
 //            var borrowerItemViewModel = new BorrowerItemViewModel();
-//          
+//            borrowersItem.ItemId = item.Id;
+//            borrowersItem.BorrowerId = borrower.Id;
+//
 //            mapper.Map<BorrowersItem>(borrowerItemViewModel).Returns(borrowersItem);
 //
 //            borrowerItemViewModel.ItemId = item.Id;
@@ -143,8 +145,8 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
 //            borrowerItemViewModel.DateBorrowed=DateTime.Now;
 //            borrowerItemViewModel.DateReturned=DateTime.Now;
 //
-//            _itemRepository.Get(borrowerItemViewModel.ItemId).Returns(item);
-//            _borrowerRepository.Get(borrowerItemViewModel.BorrowerId).Returns(borrower);
+//            itemRepository.Get(borrowerItemViewModel.ItemId).Returns(item);
+//            borrowerRepository.Get(borrowerItemViewModel.BorrowerId).Returns(borrower);
 //            
 //            var borrowerItemController = CreateBuilder()
 //                   .WithBorrowerItemRepository(borrowerItemRepository)
