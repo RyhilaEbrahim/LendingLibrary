@@ -1,0 +1,77 @@
+﻿@model Chillisoft.LendingLibrary.Web.Models.BorrowerItemViewModel
+
+<div>
+    <h4>BorrowerItemRowViewModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ItemDescription)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ItemDescription)
+        </dd>
+
+       
+        <dt>
+            @Html.DisplayNameFor(model => model.BorrowerFirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BorrowerFirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BorrowerSurname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BorrowerSurname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BorrowerEmail)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BorrowerEmail)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BorrowerTitleDescription)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BorrowerTitleDescription)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BorrowerContactNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BorrowerContactNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateBorrowed)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateBorrowed)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateReturned)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateReturned)
+        </dd>
+
+    </dl>
+</div>
+<p>
+   
+    @Html.ActionLink("Back to List", "Index")
+</p>

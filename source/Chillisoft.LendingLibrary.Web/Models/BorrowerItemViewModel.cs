@@ -9,30 +9,37 @@ namespace Chillisoft.LendingLibrary.Web.Models
     public class BorrowerItemViewModel
     {
         public int Id { get; set; }
+        [DisplayName("Item")]
         public int ItemId { get; set; }
         [DisplayName("Item")]
         public string ItemDescription { get; set; }
         public List<SelectListItem> ItemSelectListItems { get; set; }
         public List<SelectListItem> BorrowersSelectListItems { get; set; }
-       public int BorrowerId { get; set; }
+        [DisplayName("Borrower")]
+        public int BorrowerId { get; set; }
         [DisplayName("First Name")]
      
-        public string FirstName { get; set; }
-     
-        public string Surname { get; set; }
-   
-        public string Email { get; set; }
+        public string BorrowerFirstName { get; set; }
+        [DisplayName("Surname")]
+        public string BorrowerSurname { get; set; }
+        [DisplayName("Email")]
+        public string BorrowerEmail { get; set; }
         [DisplayName("TitleId")]
         public int TitleId { get; set; }
         [DisplayName("Title")]
-        public string TitleDescription { get; set; }
+        public string BorrowerTitleDescription { get; set; }
+
         public List<SelectListItem> TitlesSelectList { get; set; }
-        public string ContactNumber { get; set; }
+
+        [DisplayName("Contact Number")]
+        public string BorrowerContactNumber { get; set; }
         public byte[] Photo { get; set; }
+        [DisplayName("Date Borrowed")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public string DateBorrowed { get; set; }
+        public DateTime DateBorrowed { get; set; }
+        [DisplayName("Date Returned")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public string DateReturned { get; set; }
+        public DateTime? DateReturned { get; set; }
 
 
 

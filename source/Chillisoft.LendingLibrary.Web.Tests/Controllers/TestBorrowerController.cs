@@ -118,7 +118,9 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
             var repository = Substitute.For<IBorrowerRepository>();
             var title = new Title { Id=RandomValueGen.GetRandomInt(), Description = RandomValueGen.GetRandomString()};
             var titles = new List<Title> {title};
+
             repository.GetAllTitles().Returns(titles);
+
             var borrowerController = CreateBuilder()
                 .WithBorrowerRepository(repository)
                 .Build();
@@ -155,7 +157,9 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
 
             var mapper = Substitute.For<IMappingEngine>();
             var borrowerViewModel = new BorrowerViewModel ();
+
             mapper.Map<Borrower>(borrowerViewModel).Returns(borrower);
+
             var borrowerController = CreateBuilder()
                 .WithBorrowerRepository(repository)
                 .WithMappingEngine(mapper)

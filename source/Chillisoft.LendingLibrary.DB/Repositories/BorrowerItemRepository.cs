@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using Chillisoft.LendingLibrary.Core.Domain;
 using Chillisoft.LendingLibrary.Core.Interfaces.Repositories;
@@ -17,12 +18,18 @@ namespace Chillisoft.LendingLibrary.DB.Repositories
         }
         public void Delete(BorrowersItem borrowerItem)
         {
-            throw new System.NotImplementedException();
+            var borrowersItem = Get(borrowerItem.Id);
+            if (borrowersItem == null) return;
+           _lendingLibraryDbContext.SetStateToDelete(borrowersItem);
+            _lendingLibraryDbContext.SaveChanges();
         }
 
         public BorrowersItem Get(int id)
         {
-            throw new System.NotImplementedException();
+            return _lendingLibraryDbContext.BorrowersItems
+               .Include(client => client.Borrower)
+               .Include(client => client.Item)
+               .FirstOrDefault(x => x.Id == id);
         }
 
         public void Save(BorrowersItem borrowersItem)
@@ -33,7 +40,11 @@ namespace Chillisoft.LendingLibrary.DB.Repositories
 
         public List<BorrowersItem> GetAll()
         {
-            return _lendingLibraryDbContext.BorrowersItems.ToList();
+            var borroweItems = _lendingLibraryDbContext.BorrowersItems
+                .Include(borrower => borrower.Item)
+                .Include(borrower => borrower.Borrower)
+                .ToList();
+            return borroweItems;
         }
     }
 }

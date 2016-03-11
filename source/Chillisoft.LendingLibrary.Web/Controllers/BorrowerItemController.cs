@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
@@ -28,7 +29,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         public ActionResult Index()
         {
             var borrowersItems = _borrowerItemRepository.GetAll();
-            var borrowerItemViewModels = _mappingEngine.Map<IEnumerable<BorrowerItemViewModel>>(borrowersItems);
+            var borrowerItemViewModels = _mappingEngine.Map<IEnumerable<BorrowerItemRowViewModel>>(borrowersItems);
             return View("Index", borrowerItemViewModels);
 
         }
@@ -36,7 +37,11 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         // GET: BorrowerItem/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            
+            var borrowerItem = _borrowerItemRepository.Get(id);
+           
+            var borrowerItemViewModel = _mappingEngine.Map<BorrowerItemViewModel>(borrowerItem);
+                return View(borrowerItemViewModel);
         }
 
         private List<SelectListItem> GetAllItems (int? titleId=null)
@@ -59,6 +64,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
             {
                 ItemSelectListItems = GetAllItems(),
                 BorrowersSelectListItems=GetAllBorrowers(),
+                DateBorrowed = DateTime.Now
             };
 
             return View(viewModel);
@@ -77,12 +83,17 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
                 if (ModelState.IsValid)
                 {
                     var borrowersItem = _mappingEngine.Map<BorrowersItem>(viewModel);
+
                     var itemId = _itemRepository.Get(viewModel.ItemId);
+
                     borrowersItem.Item = itemId;
+
                     var borrowerId = _borrowerRepository.Get(viewModel.BorrowerId);
+                
                     borrowersItem.Borrower = borrowerId;
-                    borrowersItem.DateBorrowed=DateTime.Now;
-                    borrowersItem.DateReturned=DateTime.Now;
+                    borrowersItem.DateBorrowed = viewModel.DateBorrowed;
+                    borrowersItem.DateReturned = DateTime.Now;
+                    
                     _borrowerItemRepository.Save(borrowersItem);
                     return RedirectToAction("Index");
                 }
@@ -94,16 +105,23 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         // GET: BorrowerItem/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var borrowerItem = _borrowerItemRepository.Get(id);
+            var borrowerItemViewModel = _mappingEngine.Map<BorrowerItemViewModel>(borrowerItem);
+            borrowerItemViewModel.BorrowersSelectListItems = GetAllBorrowers(borrowerItem.Borrower.Id);
+            borrowerItemViewModel.ItemSelectListItems = GetAllItems(borrowerItem.Item.Id);
+            borrowerItemViewModel.DateReturned=DateTime.Now;
+
+            return View(borrowerItemViewModel);
         }
 
         // POST: BorrowerItem/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(BorrowerItemViewModel viewModel)
         {
             try
             {
-                // TODO: Add update logic here
+                var borrowersItem = _mappingEngine.Map<BorrowersItem>(viewModel);
+                _borrowerItemRepository.Save(borrowersItem);
 
                 return RedirectToAction("Index");
             }
@@ -116,16 +134,20 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         // GET: BorrowerItem/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var borrowersItem = _borrowerItemRepository.Get(id);
+            var borrowerItemViewModel = _mappingEngine.Map<BorrowerItemViewModel>(borrowersItem);
+            return View(borrowerItemViewModel);
         }
 
         // POST: BorrowerItem/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Delete(BorrowerItemViewModel viewModel)
         {
             try
             {
-                // TODO: Add delete logic here
+                var borrowersItem = _mappingEngine.Map<BorrowersItem>(viewModel);
+                _borrowerItemRepository.Delete(borrowersItem);
+
 
                 return RedirectToAction("Index");
             }

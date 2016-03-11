@@ -13,6 +13,7 @@ namespace Chillisoft.LendingLibrary.DB
         IDbSet<Title> Titles { get; set; }
         IDbSet<Item> Items { get; set; }
         IDbSet<BorrowersItem> BorrowersItems { get; set; }
+        void SetStateToDelete(EntityBase entityList);
     }
 
     public class LendingLibraryDbContext : DbContext, ILendingLibraryDbContext
@@ -44,5 +45,9 @@ namespace Chillisoft.LendingLibrary.DB
         public IDbSet<Title> Titles { get; set; }
         public IDbSet<Item> Items { get; set; }
         public IDbSet<BorrowersItem> BorrowersItems { get; set; }
+        public void SetStateToDelete(EntityBase entityList)
+        {
+            Entry(entityList).State = entityList.Id == 0 ? EntityState.Detached : EntityState.Deleted;
+        }
     }
 }

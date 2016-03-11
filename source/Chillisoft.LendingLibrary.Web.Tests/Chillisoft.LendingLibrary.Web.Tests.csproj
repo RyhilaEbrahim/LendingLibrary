@@ -96,6 +96,7 @@
   <ItemGroup>
     <Compile Include="App_Start\Ioc\AutoMapper\TestBorrowerProfile.cs" />
     <Compile Include="Controllers\TestBorrowerController.cs" />
+    <Compile Include="Controllers\TestBorrowerItemController.cs" />
     <Compile Include="Controllers\TestingTestController.cs" />
     <Compile Include="Controllers\TestHomeController.cs" />
     <Compile Include="Controllers\TestItemController.cs" />
