@@ -74,6 +74,7 @@ namespace Chillisoft.LendingLibrary.DB.Tests.Repositories
             //---------------Set up test pack-------------------
             var borrower = new BorrowerBuilder()
                 .WithRandomProps().Build();
+
             var dbContext = new TestDbContextBuilder()
                 .WithBorrowers(borrower)
                 .Build();
@@ -292,6 +293,26 @@ namespace Chillisoft.LendingLibrary.DB.Tests.Repositories
             dbContext.Received().AttachEntity(borrower);
             dbContext.Received().SaveChanges();
         }
+
+        [Test]
+        public void Delete_GivenBorrowerItemExists_ShouldDeleteBorrowerAndCallSavedChanges()
+        {
+            //---------------Set up test pack-------------------
+            var borrower = new BorrowerBuilder()
+                   .WithRandomProps().Build();
+
+            var dbContext = new TestDbContextBuilder()
+                .WithBorrowers(borrower)
+                .Build();
+
+            var repository = CreateBuilder().WithDbContext(dbContext).Build();
+            //---------------Assert Precondition----------------
+            //---------------Execute Test ----------------------
+            repository.Delete(borrower);
+            //---------------Test Result -----------------------
+            Assert.AreEqual(0, dbContext.Borrowers.Count());
+            dbContext.Received().SaveChanges();
+        } 
 
         public BorrowerRepositoryBuilder CreateBuilder()
         {

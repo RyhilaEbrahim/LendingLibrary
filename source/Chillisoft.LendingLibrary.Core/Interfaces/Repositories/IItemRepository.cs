@@ -8,6 +8,7 @@ namespace Chillisoft.LendingLibrary.Core.Interfaces.Repositories
         void Delete(Item item);
         Item Get(int id);
         void Save(Item item);
+        List<Item> GetAllItemsNotLent();
         List<Item> GetAll();
     }
 }

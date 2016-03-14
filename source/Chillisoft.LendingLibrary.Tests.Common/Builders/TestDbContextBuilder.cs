@@ -41,6 +41,7 @@ namespace Chillisoft.LendingLibrary.Tests.Common.Builders
             SetupTitles(lendingLibraryDbContext);
             SetupBorrowers(lendingLibraryDbContext);
             SetUpItems(lendingLibraryDbContext);
+            SetUpBorrowerItems(lendingLibraryDbContext);
             return lendingLibraryDbContext;
         }
 
@@ -54,7 +55,7 @@ namespace Chillisoft.LendingLibrary.Tests.Common.Builders
         }
         private void SetUpBorrowerItems(ILendingLibraryDbContext lendingLibraryDbContext)
         {
-            if (_item != null)
+            if (_borrowerItems != null)
             {
                 var set = GetSubstituteDbSet<BorrowersItem>().SetupData(_borrowerItems);
                 lendingLibraryDbContext.BorrowersItems.Returns(set);

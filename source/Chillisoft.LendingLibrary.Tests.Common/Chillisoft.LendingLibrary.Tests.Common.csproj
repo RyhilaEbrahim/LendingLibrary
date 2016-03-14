@@ -76,6 +76,7 @@
   <ItemGroup>
     <Compile Include="Builders\BorrowerBuilder.cs" />
     <Compile Include="Builders\BorrowerItemBuilder.cs" />
+    <Compile Include="Builders\BorrowerItemViewModelBuilder.cs" />
     <Compile Include="Builders\ItemBuilder.cs" />
     <Compile Include="Builders\TestDbContextBuilder.cs" />
     <Compile Include="Builders\TitleBuilder.cs" />
@@ -99,6 +100,10 @@
     <ProjectReference Include="..\Chillisoft.LendingLibrary.DB\Chillisoft.LendingLibrary.DB.csproj">
       <Project>{65C18E2B-145E-4A09-B035-FF6AFD09015A}</Project>
       <Name>Chillisoft.LendingLibrary.DB</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Chillisoft.LendingLibrary.Web\Chillisoft.LendingLibrary.Web.csproj">
+      <Project>{78749CF9-CF7F-4854-AF57-B67187B98BBA}</Project>
+      <Name>Chillisoft.LendingLibrary.Web</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -14,6 +14,7 @@ namespace Chillisoft.LendingLibrary.Web.Bootstrappers.AutoMapper
 
             Mapper.CreateMap<BorrowersItem, BorrowerItemRowViewModel>();
             Mapper.CreateMap<BorrowerItemRowViewModel, BorrowersItem>();
+
         }
     }
 }

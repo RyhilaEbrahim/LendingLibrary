@@ -63,18 +63,24 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         [HttpPost]
         public ActionResult Create(BorrowerViewModel viewModel, HttpPostedFileBase file = null)
         {
-            if (file != null)
+            if (ModelState.IsValid)
             {
-                var photo = ReadFully(file.InputStream);
-                viewModel.Photo = photo;
-              
+                if (file != null)
+                {
+                    var photo = ReadFully(file.InputStream);
+                    viewModel.Photo = photo;
+
+                }
+                var borrower = _mappingEngine.Map<Borrower>(viewModel);
+                var title = _borrowerRepository.GetTitleById(viewModel.TitleId);
+                borrower.Title = title;
+                if (file != null) borrower.ContentType = file.ContentType.ToLower();
+                _borrowerRepository.Save(borrower);
+                return RedirectToAction("Index");
             }
-            var borrower = _mappingEngine.Map<Borrower>(viewModel);
-            var title = _borrowerRepository.GetTitleById(viewModel.TitleId);
-            borrower.Title = title;
-            if (file != null) borrower.ContentType = file.ContentType.ToLower();
-            _borrowerRepository.Save(borrower);
-            return RedirectToAction("Index");
+            viewModel.TitlesSelectList = GetTitles(null);
+            return View(viewModel);
+
         }
 
         public static byte[] ReadFully(Stream input)
@@ -101,9 +107,15 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         [HttpPost]
         public ActionResult Edit(BorrowerViewModel viewModel, HttpPostedFileBase file = null)
         {
-            try
+
+            if (file == null)
             {
-                if (file != null)
+                ModelState.AddModelError("NoImageSelected","Please upload an image");
+            }
+           
+            if (ModelState.IsValid)
+            { 
+             if (file != null)
                 {
                     var photo = ReadFully(file.InputStream);
                     viewModel.Photo = photo;
@@ -117,10 +129,9 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
                
                 return RedirectToAction("Index");
             }
-            catch
-            {
-                return View();
-            }
+            viewModel.TitlesSelectList = GetTitles(viewModel.TitleId);
+            return View(viewModel);
+            
         }
 
         // GET: BorrowerViewModel/Delete/5

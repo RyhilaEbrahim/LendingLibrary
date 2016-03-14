@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using Chillisoft.LendingLibrary.Core.Domain;
 using Chillisoft.LendingLibrary.Core.Interfaces.Repositories;
@@ -34,9 +35,36 @@ namespace Chillisoft.LendingLibrary.DB.Repositories
             _lendingLibraryDbContext.SaveChanges();
         }
 
+        public List<Item> GetAllItemsNotLent()
+        {
+            var allItemsMap = _lendingLibraryDbContext.Items.ToDictionary(item => item.Id);
+
+            var lentItems = _lendingLibraryDbContext.BorrowersItems
+                .Where(item => item.DateBorrowed != null && item.DateReturned == null)
+                .ToList();
+
+            var itemsNotLent = RemoveLentItems(lentItems, allItemsMap);
+
+
+            return itemsNotLent;
+        }
+
+        private List<Item> RemoveLentItems(IEnumerable<BorrowersItem> lentItems, Dictionary<int, Item> allItemsMap)
+        {
+            foreach (var borrowersItem in lentItems)
+            {
+                allItemsMap.Remove(borrowersItem.ItemId);
+            }
+            return allItemsMap.Values.ToList();
+        }
+
         public List<Item> GetAll()
         {
-            return _lendingLibraryDbContext.Items.ToList();
+            var allItems=_lendingLibraryDbContext
+                .Items
+                .ToList();
+
+            return allItems;
         }
     }
 }

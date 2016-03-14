@@ -9,7 +9,7 @@ namespace Chillisoft.LendingLibrary.DB.Migrations.Migrations
         {
             Create.Table(_Item.TableName)
                 .WithColumn(_Item.Columns.ItemId).AsInt32().PrimaryKey("PK_ItemId").Identity()
-                .WithColumn(_Item.Columns.Description).AsString(10)
+                .WithColumn(_Item.Columns.Description).AsString(55)
                 .WithDefaultEntityColumns();
         }
 

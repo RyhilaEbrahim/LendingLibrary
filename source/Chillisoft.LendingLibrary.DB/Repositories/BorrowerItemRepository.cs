@@ -41,8 +41,9 @@ namespace Chillisoft.LendingLibrary.DB.Repositories
         public List<BorrowersItem> GetAll()
         {
             var borroweItems = _lendingLibraryDbContext.BorrowersItems
-                .Include(borrower => borrower.Item)
-                .Include(borrower => borrower.Borrower)
+                .Include(borrowersItem => borrowersItem.Item)
+                .Include(borrowersItem => borrowersItem.Borrower)
+                
                 .ToList();
             return borroweItems;
         }

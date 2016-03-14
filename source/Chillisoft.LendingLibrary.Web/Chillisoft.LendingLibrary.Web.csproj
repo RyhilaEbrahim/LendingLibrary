@@ -57,6 +57,10 @@
       <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="EPPlus, Version=4.0.5.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.4.0.5\lib\net20\EPPlus.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="FluentMigrator, Version=1.6.1.0, Culture=neutral, PublicKeyToken=aacfc7de5acabf05, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentMigrator.1.6.1\lib\40\FluentMigrator.dll</HintPath>
       <Private>True</Private>
@@ -215,6 +219,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\Bootstrappers\AutoMapper\BorrowerItemProfile.cs" />
+    <Compile Include="App_Start\Bootstrappers\AutoMapper\ExcelViewModelProfile.cs" />
     <Compile Include="App_Start\Bootstrappers\WindsorBootstrapper.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -244,11 +249,13 @@
     <Compile Include="Models\BorrowerItemRowViewModel.cs" />
     <Compile Include="Models\BorrowerItemViewModel.cs" />
     <Compile Include="Models\BorrowerViewModel.cs" />
+    <Compile Include="Models\ExcelViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ItemViewModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\TestViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ExcelService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>

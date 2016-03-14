@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -8,6 +10,7 @@ using AutoMapper;
 using Chillisoft.LendingLibrary.Core.Domain;
 using Chillisoft.LendingLibrary.Core.Interfaces.Repositories;
 using Chillisoft.LendingLibrary.Web.Models;
+using Chillisoft.LendingLibrary.Web.Services;
 
 namespace Chillisoft.LendingLibrary.Web.Controllers
 {
@@ -18,6 +21,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         private readonly IItemRepository _itemRepository;
         private readonly IMappingEngine _mappingEngine;
 
+        ExcelService _excelService=new ExcelService();
         public BorrowerItemController(IBorrowerItemRepository borrowerItemRepository, IMappingEngine mappingEngine, IBorrowerRepository borrowerRepository, IItemRepository itemRepository)
         {
             _borrowerItemRepository = borrowerItemRepository;
@@ -30,10 +34,57 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         {
             var borrowersItems = _borrowerItemRepository.GetAll();
             var borrowerItemViewModels = _mappingEngine.Map<IEnumerable<BorrowerItemRowViewModel>>(borrowersItems);
+            
             return View("Index", borrowerItemViewModels);
 
         }
+        public void ExportToExcel()
+        {
+            var borrowersItems = _borrowerItemRepository.GetAll();
+            var borrowerItemViewModels = _mappingEngine.Map<IEnumerable<ExcelViewModel>>(borrowersItems);
 
+            var excelViewModels = borrowerItemViewModels.ToList();
+            var dataTable = ConvertToDataTable(excelViewModels);
+            _excelService.Export(Response,dataTable,"BorrowedItems");
+
+        }
+
+        private DataTable ConvertToDataTable(List<ExcelViewModel> excelViewModels)
+        {
+
+            DataTable dt = new DataTable();
+            AddHeaders(dt);
+            foreach (var borrowerItemViewModel in excelViewModels)
+            {
+                var row = dt.NewRow();
+
+                row["Title"] = borrowerItemViewModel.BorrowerTitleDescription;
+                row["First Name"] = borrowerItemViewModel.BorrowerFirstName;
+                row["Surname"] = borrowerItemViewModel.BorrowerSurname;
+                row["Phone Number"] = borrowerItemViewModel.BorrowerContactNumber;
+                row["Email"] = borrowerItemViewModel.BorrowerEmail;
+                row["Item Borrowed"] = borrowerItemViewModel.ItemDescription;
+                row["Date Borrowed"] = borrowerItemViewModel.DateBorrowed;
+                row["Date Returned"] = borrowerItemViewModel.DateReturned;
+                dt.Rows.Add(row);
+            }
+            return dt;
+        }
+
+        private static void AddHeaders(DataTable dt)
+        {
+
+            dt.Columns.Add("Title");
+            dt.Columns.Add("First Name");
+            dt.Columns.Add("Surname");
+            dt.Columns.Add("Phone Number");
+            dt.Columns.Add("Email");
+            dt.Columns.Add("Item Borrowed");
+            dt.Columns.Add("Date Borrowed");
+            dt.Columns.Add("Date Returned");
+        }
+
+   
         // GET: BorrowerItem/Details/5
         public ActionResult Details(int id)
         {
@@ -46,7 +97,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
 
         private List<SelectListItem> GetAllItems (int? titleId=null)
         {
-            var selectListItems = _itemRepository.GetAll()
+            var selectListItems = _itemRepository.GetAllItemsNotLent()
                 .Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.Description, Selected = t.Id == titleId.GetValueOrDefault() });
             return selectListItems.ToList();
         }
@@ -64,8 +115,8 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
             {
                 ItemSelectListItems = GetAllItems(),
                 BorrowersSelectListItems=GetAllBorrowers(),
-                DateBorrowed = DateTime.Now
-            };
+                DateBorrowed = Convert.ToDateTime(DateTime.Now.ToString("yy/MM/dd"))
+           };
 
             return View(viewModel);
         }
@@ -82,17 +133,14 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         {
                 if (ModelState.IsValid)
                 {
-                    var borrowersItem = _mappingEngine.Map<BorrowersItem>(viewModel);
+                var borrowersItem = _mappingEngine.Map<BorrowersItem>(viewModel);
 
-                    var itemId = _itemRepository.Get(viewModel.ItemId);
-
-                    borrowersItem.Item = itemId;
-
-                    var borrowerId = _borrowerRepository.Get(viewModel.BorrowerId);
-                
-                    borrowersItem.Borrower = borrowerId;
-                    borrowersItem.DateBorrowed = viewModel.DateBorrowed;
-                    borrowersItem.DateReturned = DateTime.Now;
+                var itemId = _itemRepository.Get(viewModel.ItemId);
+                borrowersItem.Item = itemId;
+                var borrowerId = _borrowerRepository.Get(viewModel.BorrowerId);
+                borrowersItem.Borrower = borrowerId;
+                borrowersItem.DateBorrowed = viewModel.DateBorrowed;
+                borrowersItem.DateReturned = null;
                     
                     _borrowerItemRepository.Save(borrowersItem);
                     return RedirectToAction("Index");
@@ -106,8 +154,12 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         public ActionResult Edit(int id)
         {
             var borrowerItem = _borrowerItemRepository.Get(id);
-            var borrowerItemViewModel = _mappingEngine.Map<BorrowerItemViewModel>(borrowerItem);
+
+            var borrowerItemViewModel =
+                _mappingEngine.Map<BorrowerItemViewModel>(borrowerItem);
+
             borrowerItemViewModel.BorrowersSelectListItems = GetAllBorrowers(borrowerItem.Borrower.Id);
+
             borrowerItemViewModel.ItemSelectListItems = GetAllItems(borrowerItem.Item.Id);
             borrowerItemViewModel.DateReturned=DateTime.Now;
 
@@ -127,6 +179,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
             }
             catch
             {
+                //Load selectlists
                 return View();
             }
         }
