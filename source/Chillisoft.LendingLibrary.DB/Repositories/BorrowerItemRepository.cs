@@ -41,9 +41,9 @@ namespace Chillisoft.LendingLibrary.DB.Repositories
         public List<BorrowersItem> GetAll()
         {
             var borroweItems = _lendingLibraryDbContext.BorrowersItems
+                .OrderByDescending(item => item.DateBorrowed)
                 .Include(borrowersItem => borrowersItem.Item)
                 .Include(borrowersItem => borrowersItem.Borrower)
-                
                 .ToList();
             return borroweItems;
         }

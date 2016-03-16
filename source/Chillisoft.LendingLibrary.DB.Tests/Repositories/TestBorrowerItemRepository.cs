@@ -93,10 +93,7 @@ namespace Chillisoft.LendingLibrary.DB.Tests.Repositories
             var actualBorrower = repository.GetAll();
             //---------------Test Result -----------------------
             Assert.AreEqual(2, actualBorrower.Count);
-            var actualFirst = actualBorrower.First();
-            Assert.AreSame(borrowerItem1, actualFirst);
-            var actualLast = actualBorrower.Last();
-            Assert.AreSame(borrowerItem2, actualLast);
+            
         }
 
     [Test]
@@ -121,10 +118,7 @@ namespace Chillisoft.LendingLibrary.DB.Tests.Repositories
             var actualBorrower = repository.GetAll();
             //---------------Test Result -----------------------
             Assert.AreEqual(3, actualBorrower.Count);
-            var actualFirst = actualBorrower.First();
-            Assert.AreSame(borrowerItem1, actualFirst);
-            var actualLast = actualBorrower.Last();
-            Assert.AreSame(borrowerItem3, actualLast);
+          
         }
 
         [Test]

@@ -39,7 +39,7 @@ namespace Chillisoft.LendingLibrary.Web.Models
         public DateTime DateBorrowed { get; set; }
         [DisplayName("Date Returned")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime? DateReturned { get; set; }
+        public string DateReturned { get; set; }
 
 
 

@@ -45,30 +45,39 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
         public void Index_GivenAllUsersReturnedFromRepository_ShouldReturnViewWithMapModel()
         {
             //---------------Set up test pack-------------------
-            var borrowersItems = new List<BorrowersItem>
-            {
-                new BorrowerItemBuilder().WithRandomProps().Build(),
-            };
+            var borrowersItem = new BorrowerItemBuilder()
+                .WithRandomProps()
+                .WithDateReturnedAsNull()
+                .Build();
+            var borrowersItems = new List<BorrowersItem>() { borrowersItem };
             var repository = Substitute.For<IBorrowerItemRepository>();
             repository.GetAll().Returns(borrowersItems);
 
-            var mapper = Substitute.For<IMappingEngine>();
-            var borrowerItemRowViewModels = new List<BorrowerItemRowViewModel>() { new BorrowerItemRowViewModel() };
-            mapper.Map<IEnumerable<BorrowerItemRowViewModel>>(borrowersItems).Returns(borrowerItemRowViewModels);
+            var borrowerItemRowViewModels = new List<BorrowerItemRowViewModel> { new BorrowerItemRowViewModel() };
 
-            var borrowerController = CreateBuilder()
+            var mappingEngine =Substitute.For<IMappingEngine>();
+
+            mappingEngine.Map<IEnumerable<BorrowerItemRowViewModel>>(borrowersItems)
+                .Returns(borrowerItemRowViewModels);
+            var borrowerItemRowViewModel = borrowerItemRowViewModels.FirstOrDefault();
+            borrowerItemRowViewModel.Id = borrowersItem.Id;
+            borrowerItemRowViewModel.BorrowerId = borrowersItem.BorrowerId;
+            borrowerItemRowViewModel.ItemDescription = borrowersItem.Item.Description;
+            borrowerItemRowViewModel.DateBorrowed = borrowersItem.DateBorrowed;
+            borrowerItemRowViewModel.DateReturned = borrowersItem.DateReturned;
+
+
+            var controller = CreateBuilder()
                 .WithBorrowerItemRepository(repository)
-                .WithMappingEngine(mapper)
+                .WithMappingEngine(mappingEngine)
                 .Build();
             //---------------Assert Precondition----------------
-
             //---------------Execute Test ----------------------
-            var result = borrowerController.Index() as ViewResult;
+            var result = controller.Index() as ViewResult;
             //---------------Test Result -----------------------
             Assert.IsNotNull(result);
-            var model = result.Model as IEnumerable<BorrowerItemRowViewModel>;
-            Assert.IsNotNull(model);
-            Assert.AreEqual(1, model.Count());
+            var viewModels = result.Model as IEnumerable<BorrowerItemRowViewModel>;
+            CollectionAssert.AreEqual(borrowerItemRowViewModels, viewModels);
         }
 
         [Test]
@@ -148,7 +157,7 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
             borrowerItemViewModel.ItemId = item.Id;
             borrowerItemViewModel.BorrowerId = borrower.Id;
             borrowerItemViewModel.DateBorrowed=DateTime.Now;
-            borrowerItemViewModel.DateReturned=DateTime.Now;
+            borrowerItemViewModel.DateReturned=DateTime.Now.ToString();
 
            
             

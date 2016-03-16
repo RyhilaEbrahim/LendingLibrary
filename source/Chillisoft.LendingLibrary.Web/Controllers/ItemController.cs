@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using AutoMapper;
 using Chillisoft.LendingLibrary.Core.Domain;
 using Chillisoft.LendingLibrary.Core.Interfaces.Repositories;
-using Chillisoft.LendingLibrary.DB;
-using Chillisoft.LendingLibrary.DB.Repositories;
 using Chillisoft.LendingLibrary.Web.Models;
 
 namespace Chillisoft.LendingLibrary.Web.Controllers
@@ -42,6 +37,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
             return View(itemViewModel);
         }
 
+        [Authorize]
         // GET: Item/Create
         public ActionResult Create()
         {
@@ -59,6 +55,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         }
 
         // GET: Item/Edit/5
+        [Authorize]
         public ActionResult Edit(int id)
         {
 
@@ -87,6 +84,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         }
 
         // GET: Item/Delete/5
+        [Authorize]
         public ActionResult Delete(int id)
         {
             var item = _itemRepository.Get(id);

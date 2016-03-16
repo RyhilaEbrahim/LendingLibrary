@@ -24,7 +24,9 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         {
             var borrower = _borrowerRepository.Get(id);
             var photo = borrower.Photo;
+
             var contentType = borrower.ContentType;
+
             return File(photo, contentType);
         }
     }

@@ -13,7 +13,7 @@ namespace Chillisoft.LendingLibrary.DB.Migrations.Migrations
              .WithColumn(_BorrowersItems.Columns.BorrowerId).AsInt32().NotNullable()
              .WithColumn(_BorrowersItems.Columns.ItemId).AsInt32().NotNullable()
              .WithColumn(_BorrowersItems.Columns.DateBorrowed).AsDateTime().NotNullable()
-             .WithColumn(_BorrowersItems.Columns.DateReturned).AsDateTime().Nullable()
+             .WithColumn(_BorrowersItems.Columns.DateReturned).AsString().Nullable()
             .WithDefaultEntityColumns();
         }
 

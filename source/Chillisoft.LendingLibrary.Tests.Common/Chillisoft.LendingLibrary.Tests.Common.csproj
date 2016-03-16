@@ -66,6 +66,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -77,6 +78,7 @@
     <Compile Include="Builders\BorrowerBuilder.cs" />
     <Compile Include="Builders\BorrowerItemBuilder.cs" />
     <Compile Include="Builders\BorrowerItemViewModelBuilder.cs" />
+    <Compile Include="Builders\FileBuilder.cs" />
     <Compile Include="Builders\ItemBuilder.cs" />
     <Compile Include="Builders\TestDbContextBuilder.cs" />
     <Compile Include="Builders\TitleBuilder.cs" />

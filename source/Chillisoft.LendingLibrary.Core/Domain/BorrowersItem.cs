@@ -9,6 +9,6 @@ namespace Chillisoft.LendingLibrary.Core.Domain
         public int ItemId { get; set; }
         public virtual Item Item { get; set; }
         public DateTime DateBorrowed { get; set; }
-         public DateTime? DateReturned{ get; set; }
+         public string DateReturned{ get; set; }
     }
 }

@@ -4,6 +4,9 @@
     ViewBag.Title = "Edit";
 }
 
+<link href="~/Content/chosen.css" rel="stylesheet" />
+<script src="~/Scripts/chosen.jquery.min.js"></script>
+<script src="~/Scripts/chosen.jquery.js"></script>
 <h2>Edit</h2>
 @Html.HiddenFor(model => model.ItemId)
 
@@ -22,7 +25,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.ItemId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.ItemId, Model.ItemSelectListItems, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.DropDownListFor(model => model.ItemId, Model.ItemSelectListItems, null, htmlAttributes: new { @class = "chosen-select-width" })
                 @Html.ValidationMessageFor(model => model.ItemId, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -31,7 +34,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.BorrowerId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.BorrowerId, Model.BorrowersSelectListItems, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.DropDownListFor(model => model.BorrowerId, Model.BorrowersSelectListItems, null, htmlAttributes: new { @class = "chosen-select-width" })
                 @Html.ValidationMessageFor(model => model.BorrowerId, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -77,5 +80,22 @@
             });
     </script>
 
-   
+
 }
+
+<script type="text/javascript">
+
+
+         var config = {
+             '.chosen-select': {},
+             '.chosen-select-deselect': { allow_single_deselect: true },
+             '.chosen-select-no-single': { disable_search_threshold: 10 },
+             '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+             '.chosen-select-width': { width: "30%"}//,
+             //'.chosen-search': {disable_search: false}
+         }
+         for (var selector in config) {
+             $(selector).chosen(config[selector]);
+         }
+
+</script> 

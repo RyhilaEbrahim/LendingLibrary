@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
 using Chillisoft.LendingLibrary.Core.Domain;
@@ -32,12 +29,25 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         // GET: BorrowerItem
         public ActionResult Index()
         {
+
             var borrowersItems = _borrowerItemRepository.GetAll();
             var borrowerItemViewModels = _mappingEngine.Map<IEnumerable<BorrowerItemRowViewModel>>(borrowersItems);
-            
+            SetReturnedDateToBlank(borrowerItemViewModels);
             return View("Index", borrowerItemViewModels);
 
         }
+
+        private static void SetReturnedDateToBlank(IEnumerable<BorrowerItemRowViewModel> borrowerItemViewModels)
+        {
+            for (var i = 0; i < borrowerItemViewModels.Count(); i++)
+            {
+                if (borrowerItemViewModels.ElementAt(i).DateReturned.Equals("0001-01-01"))
+                {
+                    borrowerItemViewModels.ElementAt(i).DateReturned = "";
+                }
+            }
+        }
+
         public void ExportToExcel()
         {
             var borrowersItems = _borrowerItemRepository.GetAll();
@@ -108,6 +118,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
                 .Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.FirstName+","+t.Surname, Selected = t.Id == borrowerId.GetValueOrDefault() });
             return selectListItems.ToList();
         }
+        [Authorize]
         // GET: BorrowerItem/Create
         public ActionResult Create()
         {
@@ -140,7 +151,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
                 var borrowerId = _borrowerRepository.Get(viewModel.BorrowerId);
                 borrowersItem.Borrower = borrowerId;
                 borrowersItem.DateBorrowed = viewModel.DateBorrowed;
-                borrowersItem.DateReturned = null;
+                borrowersItem.DateReturned = "";
                     
                     _borrowerItemRepository.Save(borrowersItem);
                     return RedirectToAction("Index");
@@ -151,6 +162,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         }
 
         // GET: BorrowerItem/Edit/5
+        [Authorize]
         public ActionResult Edit(int id)
         {
             var borrowerItem = _borrowerItemRepository.Get(id);
@@ -161,7 +173,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
             borrowerItemViewModel.BorrowersSelectListItems = GetAllBorrowers(borrowerItem.Borrower.Id);
 
             borrowerItemViewModel.ItemSelectListItems = GetAllItems(borrowerItem.Item.Id);
-            borrowerItemViewModel.DateReturned=DateTime.Now;
+            borrowerItemViewModel.DateReturned=DateTime.Now.ToString();
 
             return View(borrowerItemViewModel);
         }
@@ -183,7 +195,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
                 return View();
             }
         }
-
+        [Authorize]
         // GET: BorrowerItem/Delete/5
         public ActionResult Delete(int id)
         {

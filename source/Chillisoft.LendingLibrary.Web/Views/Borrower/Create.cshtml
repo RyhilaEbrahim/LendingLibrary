@@ -5,7 +5,9 @@
 }
 
 <h2>Create Borrowers</h2>
-
+<link href="~/Content/chosen.css" rel="stylesheet" />
+<script src="~/Scripts/chosen.jquery.min.js"></script>
+<script src="~/Scripts/chosen.jquery.js"></script>
 
 @using (Html.BeginForm("Create","Borrower",FormMethod.Post,new {enctype="multipart/form-data"}))
 {
@@ -14,12 +16,12 @@
     <div class="form-horizontal">
         
         <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
         <div class="form-group">
             @Html.LabelFor(model => model.TitleId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.TitleId, Model.TitlesSelectList, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.TitleId, "", new { @class = "text-danger" })
+                @Html.DropDownListFor(model => model.TitleId, Model.TitlesSelectList, null, htmlAttributes: new { @class = "chosen-select-width" })
+              
             </div>
         </div>
 
@@ -27,7 +29,7 @@
             @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+            
             </div>
         </div>
 
@@ -35,7 +37,7 @@
             @Html.LabelFor(model => model.Surname, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Surname, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Surname, "", new { @class = "text-danger" })
+           
             </div>
         </div>
 
@@ -43,7 +45,7 @@
             @Html.LabelFor(model => model.Email, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Email, new {htmlAttributes = new {@class = "form-control"}})
-                @Html.ValidationMessageFor(model => model.Email, "", new {@class = "text-danger"})
+      
             </div>
         </div>
 
@@ -77,3 +79,20 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+<script type="text/javascript">
+
+
+    var config =
+        {
+             '.chosen-select': {},
+             '.chosen-select-deselect': { allow_single_deselect: true },
+             '.chosen-select-no-single': { disable_search_threshold: 10 },
+             '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+             '.chosen-select-width': { width: "30%"}//,
+             //'.chosen-search': {disable_search: false}
+         }
+         for (var selector in config) {
+             $(selector).chosen(config[selector]);
+         }
+
+</script> 

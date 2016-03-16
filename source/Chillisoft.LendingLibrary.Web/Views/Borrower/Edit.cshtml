@@ -5,12 +5,15 @@
 }
 
 <h2>Edit</h2>
+<link href="~/Content/chosen.css" rel="stylesheet" />
+<script src="~/Scripts/chosen.jquery.min.js"></script>
+<script src="~/Scripts/chosen.jquery.js"></script>
 
 
 @using (Html.BeginForm("Edit", "Borrower", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
                 @Html.AntiForgeryToken()
-
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
                 <div class="form-horizontal">
         <h4>Borrower</h4>
         <hr />
@@ -20,7 +23,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.TitleId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.TitleId, Model.TitlesSelectList, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.DropDownListFor(model => model.TitleId, Model.TitlesSelectList, null, htmlAttributes: new { @class = "chosen-select-width" })
              
             </div>
         </div>
@@ -75,3 +78,19 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+<script type="text/javascript">
+
+
+         var config = {
+             '.chosen-select': {},
+             '.chosen-select-deselect': { allow_single_deselect: true },
+             '.chosen-select-no-single': { disable_search_threshold: 10 },
+             '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+             '.chosen-select-width': { width: "30%"}//,
+             //'.chosen-search': {disable_search: false}
+         }
+         for (var selector in config) {
+             $(selector).chosen(config[selector]);
+         }
+
+</script> 

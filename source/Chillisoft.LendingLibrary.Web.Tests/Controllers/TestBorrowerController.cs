@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
 using Chillisoft.LendingLibrary.Core.Domain;
@@ -150,15 +152,32 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
         [Test]
         public void Create_POST_ShouldCallSaveAndRedirectToIndex()
         {
-            var borrower = new BorrowerBuilder().WithRandomProps().Build();
+            var borrower = new BorrowerBuilder()
+                .WithRandomProps()
+                .Build();
+           
+            var file = Substitute.For<HttpPostedFileBase>();
+            file.FileName.Returns("somefileName");
+            file.ContentLength.Returns(Int32.MaxValue);
+            file.ContentType.Returns(String.Empty);
+            file.InputStream.Returns(Stream.Null);
+            
             var repository = Substitute.For<IBorrowerRepository>();
-            var title = TitleBuilder.BuildRandom();
+            var title = new TitleBuilder().WithRandomProps().Build();
+            borrower.TitleId = title.Id;
             repository.GetTitleById(borrower.TitleId).Returns(title);
 
             var mapper = Substitute.For<IMappingEngine>();
             var borrowerViewModel = new BorrowerViewModel ();
 
             mapper.Map<Borrower>(borrowerViewModel).Returns(borrower);
+            borrowerViewModel.Id = borrower.Id;
+            borrowerViewModel.ContactNumber = borrower.ContactNumber;
+            borrowerViewModel.Email = borrower.Email;
+            borrowerViewModel.FirstName = borrower.FirstName;
+            borrowerViewModel.Surname = borrower.Surname;
+            borrowerViewModel.Photo = borrower.Photo;
+            borrowerViewModel.TitleId = borrower.TitleId;
 
             var borrowerController = CreateBuilder()
                 .WithBorrowerRepository(repository)
@@ -166,7 +185,7 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
                 .Build();
             //---------------Assert Precondition----------------
             //---------------Execute Test ----------------------
-            var result = borrowerController.Create(borrowerViewModel) as RedirectToRouteResult;
+            var result = borrowerController.Create(borrowerViewModel, file) as RedirectToRouteResult;
 
             //---------------Test Result -----------------------
             Assert.AreSame(title, borrower.Title);

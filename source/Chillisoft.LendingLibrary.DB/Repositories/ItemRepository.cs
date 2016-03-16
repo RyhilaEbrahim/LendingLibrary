@@ -40,7 +40,7 @@ namespace Chillisoft.LendingLibrary.DB.Repositories
             var allItemsMap = _lendingLibraryDbContext.Items.ToDictionary(item => item.Id);
 
             var lentItems = _lendingLibraryDbContext.BorrowersItems
-                .Where(item => item.DateBorrowed != null && item.DateReturned == null)
+                .Where(item => item.DateBorrowed != null && item.DateReturned == "")
                 .ToList();
 
             var itemsNotLent = RemoveLentItems(lentItems, allItemsMap);

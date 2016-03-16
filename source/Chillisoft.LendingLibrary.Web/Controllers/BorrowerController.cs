@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Optimization;
 using AutoMapper;
 using Chillisoft.LendingLibrary.Core.Domain;
-using Chillisoft.LendingLibrary.DB;
-using Chillisoft.LendingLibrary.DB.Repositories;
 using Chillisoft.LendingLibrary.Web.Models;
 using IBorrowerRepository = Chillisoft.LendingLibrary.Core.Interfaces.Repositories.IBorrowerRepository;
 
@@ -45,6 +41,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         }
 
         // GET: BorrowerViewModel/Create
+        [Authorize]
         public ActionResult Create()
         {
             var viewModel = new BorrowerViewModel();
@@ -63,14 +60,23 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         [HttpPost]
         public ActionResult Create(BorrowerViewModel viewModel, HttpPostedFileBase file = null)
         {
+            if(file==null)
+                ModelState.AddModelError("ImageNameCannotBeNull", "Please select an image");
+            if (viewModel.FirstName==null)
+                ModelState.AddModelError("ImageNameCannotBeNull", "Please enter First Name");
+            if (viewModel.Surname == null)
+                ModelState.AddModelError("ImageNameCannotBeNull", "Please enter Surname");
+            if (viewModel.Email == null)
+                ModelState.AddModelError("ImageNameCannotBeNull", "Please enter email");
+        
             if (ModelState.IsValid)
             {
                 if (file != null)
                 {
                     var photo = ReadFully(file.InputStream);
                     viewModel.Photo = photo;
-
                 }
+
                 var borrower = _mappingEngine.Map<Borrower>(viewModel);
                 var title = _borrowerRepository.GetTitleById(viewModel.TitleId);
                 borrower.Title = title;
@@ -78,7 +84,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
                 _borrowerRepository.Save(borrower);
                 return RedirectToAction("Index");
             }
-            viewModel.TitlesSelectList = GetTitles(null);
+            viewModel.TitlesSelectList = GetTitles(viewModel.TitleId);
             return View(viewModel);
 
         }
@@ -93,13 +99,14 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         }
 
         // GET: BorrowerViewModel/Edit/5
+        [Authorize]
         public ActionResult Edit(int id)
         {
 
             var borrower = _borrowerRepository.Get(id);
-           
             var borrowViewModel = _mappingEngine.Map<BorrowerViewModel>(borrower);
             borrowViewModel.TitlesSelectList = GetTitles(borrowViewModel.TitleId);
+            borrowViewModel.Photo = borrower.Photo;
             return View(borrowViewModel);
         }
 
@@ -107,20 +114,21 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         [HttpPost]
         public ActionResult Edit(BorrowerViewModel viewModel, HttpPostedFileBase file = null)
         {
-
             if (file == null)
-            {
-                ModelState.AddModelError("NoImageSelected","Please upload an image");
-            }
+                ModelState.AddModelError("ImageNameCannotBeNull", "Please select an image");
+            if (viewModel.FirstName == null)
+                ModelState.AddModelError("ImageNameCannotBeNull", "Please enter First Name");
+            if (viewModel.Surname == null)
+                ModelState.AddModelError("ImageNameCannotBeNull", "Please enter Surname");
+            if (viewModel.Email == null)
+                ModelState.AddModelError("ImageNameCannotBeNull", "Please enter email");
+
+
            
             if (ModelState.IsValid)
-            { 
-             if (file != null)
-                {
-                    var photo = ReadFully(file.InputStream);
+            {  var photo = ReadFully(file.InputStream);
                     viewModel.Photo = photo;
-
-                }
+                
                 var borrower = _mappingEngine.Map<Borrower>(viewModel);
                 var title = _borrowerRepository.GetTitleById(viewModel.TitleId);
                 borrower.Title = title;
@@ -143,6 +151,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         }
 
         // POST: BorrowerViewModel/Delete/5
+        [Authorize]
         [HttpPost]
         public ActionResult Delete(BorrowerViewModel viewModel)
         {
