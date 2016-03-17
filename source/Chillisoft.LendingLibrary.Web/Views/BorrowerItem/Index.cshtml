@@ -3,9 +3,10 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table">
+<div class="table-responsive">
+<table class="TFtable">
     <tr>
-       
+
         <th>
             @Html.DisplayNameFor(model => model.BorrowerTitleDescription)
         </th>
@@ -31,53 +32,64 @@
         <th>
             @Html.DisplayNameFor(model => model.DateReturned)
         </th>
-        
+
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-       <td>
-            @Html.DisplayFor(modelItem => item.BorrowerTitleDescription)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.BorrowerFirstName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.BorrowerSurname)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.BorrowerContactNumber)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.BorrowerEmail)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ItemDescription)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DateBorrowed)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DateReturned)
-        </td>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.BorrowerTitleDescription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BorrowerFirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BorrowerSurname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BorrowerContactNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BorrowerEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ItemDescription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateBorrowed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateReturned)
+            </td>
 
-       @if (item.DateReturned == "")
-       {
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-        </td>
-       }
-      
-    </tr>
-}
- 
+            @if (item.DateReturned == "")
+            {
+                <td>
+
+                    <p>
+                        <button type="button" class="btn btn-default btn-sm" onclick="location.href = '@Url.Action("Edit", new {id = item.Id})'">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </button>
+
+                        <button type="button" class="btn btn-default btn-sm" onclick="location.href = '@Url.Action("Delete", new {id = item.Id})'">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+
+                    </p>
+
+                </td>
+            }
+
+        </tr>
+    }
+
 
 </table>
-<div class="row">
-    <div class="col-md-8">
-        @Html.ActionLink("Export", "ExportToExcel")
     </div>
-</div>
+    <div class="row">
+        <div class="col-md-8">
+            @Html.ActionLink("Export", "ExportToExcel")
+        </div>
+    </div>

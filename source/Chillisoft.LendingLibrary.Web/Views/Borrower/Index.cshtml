@@ -4,58 +4,70 @@
     ViewBag.Title = "Index";
 }
 
-<h2>View Borrowers</h2>
+<h2 style="color:forestgreen" align="center"> Borrowers</h2>
 
-<p>
+<p style="font-size: 20px">
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table">
-    <tr>
-        <th>
-            Profile Picture
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TitleDescription)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstName)
-        </th>
+<div class="table-responsive">
+    <table class="table">
+        <tr  style="font-size: 18px">
+            <th>
+                Profile Picture
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TitleDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
 
-        <th>
-            @Html.DisplayNameFor(model => model.Surname)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Email)
-        </th> 
-        <th>
-            
-        </th>
-    </tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Surname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            <img src="@Url.Action( "show", "image", new { id = item.Id })" style="width: 100px; height: 50px;" />
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TitleDescription)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FirstName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Surname)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Email)
-        </td>
+            </th>
+        </tr>
 
-        <td>
-            @Html.ActionLink("Edit", "Edit", new {id = item.Id}) |
-            @Html.ActionLink("Details", "Details", new {id = item.Id}) |
-            @Html.ActionLink("Delete", "Delete", new {id = item.Id})
-        </td>
-    </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <img src="@Url.Action( "show", "image", new { id = item.Id })" style="width: 100px; height: 50px;" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TitleDescription)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Surname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
 
-</table>
+                <td>
+
+                    <p>
+                        <button type="button" class="btn btn-default btn-sm" onclick="location.href = '@Url.Action("Edit", new {id = item.Id})'">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </button>
+
+                        <button type="button" class="btn btn-default btn-sm" onclick="location.href = '@Url.Action("Delete", new {id = item.Id})'">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+
+                    </p>
+
+                </td>
+            </tr>
+        }
+
+    </table>
+    </div>
