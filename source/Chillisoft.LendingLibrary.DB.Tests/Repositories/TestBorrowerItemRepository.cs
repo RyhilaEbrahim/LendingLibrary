@@ -14,7 +14,7 @@ namespace Chillisoft.LendingLibrary.DB.Tests.Repositories
         [Test]
         public void Construct()
         {
-            Assert.DoesNotThrow(() => new BorrowerItemRepository(NSubstitute.Substitute.For<ILendingLibraryDbContext>()));
+            Assert.DoesNotThrow(() => new BorrowerItemRepository(Substitute.For<ILendingLibraryDbContext>()));
         }
 
         [Test]
