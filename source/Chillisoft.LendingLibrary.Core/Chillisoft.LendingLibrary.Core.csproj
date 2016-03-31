@@ -46,10 +46,12 @@
     <Compile Include="Domain\EntityBase.cs" />
     <Compile Include="Domain\ImageContentType.cs" />
     <Compile Include="Domain\Item.cs" />
+    <Compile Include="Domain\Roles.cs" />
     <Compile Include="Domain\Title.cs" />
     <Compile Include="Interfaces\Repositories\IBorrowerItemRepository.cs" />
     <Compile Include="Interfaces\Repositories\IBorrowerRepository.cs" />
     <Compile Include="Interfaces\Repositories\IItemRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IRolesRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

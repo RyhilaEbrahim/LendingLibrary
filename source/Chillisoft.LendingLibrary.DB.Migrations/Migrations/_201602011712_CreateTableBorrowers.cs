@@ -11,9 +11,9 @@ namespace Chillisoft.LendingLibrary.DB.Migrations.Migrations
             Create.Table(_Borrower.TableName)
                 .WithColumn(_Borrower.Columns.BorrowerId).AsInt32().PrimaryKey("PK_BorrowerID").Identity()
                 .WithColumn(_Borrower.Columns.TitleId).AsInt32().NotNullable()
-                .WithColumn(_Borrower.Columns.FirstName).AsString(20)
-                .WithColumn(_Borrower.Columns.Surname).AsString(20)
-                .WithColumn(_Borrower.Columns.Email).AsString(25)
+                .WithColumn(_Borrower.Columns.FirstName).AsString(25)
+                .WithColumn(_Borrower.Columns.Surname).AsString(25)
+                .WithColumn(_Borrower.Columns.Email).AsString(200)
                 .WithDefaultEntityColumns();
         }
 

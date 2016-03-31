@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
+using AutoMapper;
+using Chillisoft.LendingLibrary.Core.Interfaces.Repositories;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -17,9 +21,14 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+       
+        private readonly IRolesRepository _roleRepository;
+        
 
-        public AccountController()
+        public AccountController(IRolesRepository roleRepository)
         {
+            _roleRepository = roleRepository;
+            
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
@@ -134,12 +143,23 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
             }
         }
 
+        private List<SelectListItem> GetRoles(string roleId =null)
+        {
+            var selectListItems = _roleRepository.GetAllRoles()
+                .Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.Name, Selected = t.Id == roleId });
+            return selectListItems.ToList();
+        }
+
         //
         // GET: /Account/Register
         [AllowAnonymous]
         public ActionResult Register()
         {
-            return View();
+            var viewModel = new RegisterViewModel();
+            viewModel.RoleSelectListItems = GetRoles();
+
+            return View(viewModel);
+          //  return View();
         }
 
         //
@@ -155,17 +175,23 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);            
-                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                     var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+                     var role = _roleRepository.GetRoleById(model.id);
+                    await UserManager.AddToRoleAsync(user.Id, role.Name);
+                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                  
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                   
                     return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);
             }
 
             // If we got this far, something failed, redisplay form
+            model.RoleSelectListItems = GetRoles();
             return View(model);
+
         }
 
         //

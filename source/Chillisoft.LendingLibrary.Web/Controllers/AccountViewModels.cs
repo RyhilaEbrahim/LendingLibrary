@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 
 namespace Chillisoft.LendingLibrary.Web.Models
 {
@@ -77,8 +78,15 @@ namespace Chillisoft.LendingLibrary.Web.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+        [Required]
+        [Display(Name = "Username")]
+        public string Name { get; set; }
+        [Display(Name = "UserType")]
+        public string id { get; set; }
+        public List<SelectListItem> RoleSelectListItems { get; set; } 
+
     }
 
     public class ResetPasswordViewModel
@@ -96,7 +104,7 @@ namespace Chillisoft.LendingLibrary.Web.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }

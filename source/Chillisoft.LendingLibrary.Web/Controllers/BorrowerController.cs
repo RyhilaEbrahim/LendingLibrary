@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
 using Chillisoft.LendingLibrary.Core.Domain;
+using Chillisoft.LendingLibrary.Web.CustomFilters;
 using Chillisoft.LendingLibrary.Web.Models;
 using IBorrowerRepository = Chillisoft.LendingLibrary.Core.Interfaces.Repositories.IBorrowerRepository;
 
@@ -22,7 +23,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
             _borrowerRepository = borrowerRepository;
             _mappingEngine = mappingEngine;
         }
-
+        [AuthLog(Roles = "Borrower")]
         public ActionResult Index()
         {
             var borrowers = _borrowerRepository.GetAll();
@@ -30,7 +31,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
             return View("Index", borrowerViewModels);
         }
 
-      
+       
         // GET: BorrowerViewModel/Details/5
         public ActionResult Details(int id)
         {
@@ -41,7 +42,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         }
 
         // GET: BorrowerViewModel/Create
-        [Authorize]
+     
         public ActionResult Create()
         {
             var viewModel = new BorrowerViewModel();
@@ -55,7 +56,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
                 .Select(t => new SelectListItem {Value = t.Id.ToString(), Text = t.Description, Selected = t.Id == titleId.GetValueOrDefault()});
             return selectListItems.ToList();
         }
-
+        
         // POST: BorrowerViewModel/Create
         [HttpPost]
         public ActionResult Create(BorrowerViewModel viewModel, HttpPostedFileBase file = null)
@@ -99,7 +100,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         }
 
         // GET: BorrowerViewModel/Edit/5
-        [Authorize]
+        
         public ActionResult Edit(int id)
         {
 
@@ -112,6 +113,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
 
         // POST: BorrowerViewModel/Edit/5
         [HttpPost]
+        
         public ActionResult Edit(BorrowerViewModel viewModel, HttpPostedFileBase file = null)
         {
             if (file == null)
@@ -151,7 +153,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         }
 
         // POST: BorrowerViewModel/Delete/5
-        [Authorize]
+      
         [HttpPost]
         public ActionResult Delete(BorrowerViewModel viewModel)
         {
