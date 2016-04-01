@@ -197,7 +197,7 @@ namespace Chillisoft.LendingLibrary.Web.Tests.Controllers
             var borrowers = new List<Borrower> { borrower };
 
 
-            itemRepository.GetAllItemsNotLent().Returns(items);
+            itemRepository.GetAll().Returns(items);
             borrowerRepository.GetAll().Returns(borrowers);
           
 
