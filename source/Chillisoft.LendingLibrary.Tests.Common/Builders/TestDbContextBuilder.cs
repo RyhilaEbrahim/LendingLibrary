@@ -13,6 +13,7 @@ namespace Chillisoft.LendingLibrary.Tests.Common.Builders
         private List<Borrower> _borrower = new List<Borrower>();
         private List<Title> _title = new List<Title>();
         private List<Item> _item = new List<Item>();
+        private List<Roles> _roles = new List<Roles>();
         private List<BorrowersItem> _borrowerItems = new List<BorrowersItem>();
 
         public TestDbContextBuilder WithBorrowers(params Borrower[] borrowers)
@@ -35,6 +36,12 @@ namespace Chillisoft.LendingLibrary.Tests.Common.Builders
             _borrowerItems = borrowerItems.ToList();
             return this;
         }
+
+        public TestDbContextBuilder WithRoles (params Roles[] roles)
+        {
+            _roles = roles.ToList();
+            return this;
+        }
         public ILendingLibraryDbContext Build()
         {
             var lendingLibraryDbContext = Substitute.For<ILendingLibraryDbContext>();
@@ -42,6 +49,7 @@ namespace Chillisoft.LendingLibrary.Tests.Common.Builders
             SetupBorrowers(lendingLibraryDbContext);
             SetUpItems(lendingLibraryDbContext);
             SetUpBorrowerItems(lendingLibraryDbContext);
+            SetUpRoles(lendingLibraryDbContext);
             return lendingLibraryDbContext;
         }
 
@@ -51,6 +59,14 @@ namespace Chillisoft.LendingLibrary.Tests.Common.Builders
             {
                 var set = GetSubstituteDbSet<Item>().SetupData(_item);
                 lendingLibraryDbContext.Items.Returns(set);
+            }
+        }
+        private void SetUpRoles(ILendingLibraryDbContext lendingLibraryDbContext)
+        {
+            if (_roles != null)
+            {
+                var set = GetSubstituteDbSet<Roles>().SetupData(_roles);
+                lendingLibraryDbContext.Roles.Returns(set);
             }
         }
         private void SetUpBorrowerItems(ILendingLibraryDbContext lendingLibraryDbContext)

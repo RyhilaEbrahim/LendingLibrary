@@ -80,6 +80,7 @@
     <Compile Include="Builders\BorrowerItemViewModelBuilder.cs" />
     <Compile Include="Builders\FileBuilder.cs" />
     <Compile Include="Builders\ItemBuilder.cs" />
+    <Compile Include="Builders\RoleBuilder.cs" />
     <Compile Include="Builders\TestDbContextBuilder.cs" />
     <Compile Include="Builders\TitleBuilder.cs" />
     <Compile Include="Extensions\NSubstituteDbSetExtensions.cs" />

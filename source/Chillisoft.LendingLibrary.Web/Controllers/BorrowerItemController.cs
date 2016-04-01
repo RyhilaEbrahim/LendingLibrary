@@ -107,6 +107,13 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
 
         private List<SelectListItem> GetAllItems (int? titleId=null)
         {
+            var selectListItems = _itemRepository.GetAll()
+                .Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.Description, Selected = t.Id == titleId.GetValueOrDefault() });
+            return selectListItems.ToList();
+        }
+
+        private List<SelectListItem> GetAllItemsNotLent (int? titleId=null)
+        {
             var selectListItems = _itemRepository.GetAllItemsNotLent()
                 .Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.Description, Selected = t.Id == titleId.GetValueOrDefault() });
             return selectListItems.ToList();
@@ -124,7 +131,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         {
             var viewModel = new BorrowerItemViewModel
             {
-                ItemSelectListItems = GetAllItems(),
+                ItemSelectListItems = GetAllItemsNotLent(),
                 BorrowersSelectListItems=GetAllBorrowers(),
                 DateBorrowed = Convert.ToDateTime(DateTime.Now.ToString("yy/MM/dd"))
            };

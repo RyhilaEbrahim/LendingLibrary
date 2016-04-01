@@ -48,6 +48,7 @@ namespace Chillisoft.LendingLibrary.DB.Repositories
 
             return itemsNotLent;
         }
+        
 
         private List<Item> RemoveLentItems(IEnumerable<BorrowersItem> lentItems, Dictionary<int, Item> allItemsMap)
         {

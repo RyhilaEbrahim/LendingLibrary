@@ -241,7 +241,6 @@
     <Compile Include="Controllers\ImageController.cs" />
     <Compile Include="Controllers\ItemController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="CustomFilters\AuthLogAttribute.cs" />
     <Compile Include="Global.asax.cs">
@@ -261,15 +260,22 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\background.jpg" />
+    <Content Include="Content\books.jpg" />
     <Content Include="Content\bootstrap-datepicker.css" />
     <Content Include="Content\bootstrap-datepicker3.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\header.jpg" />
+    <Content Include="Content\libraryroom.jpg" />
+    <Content Include="Content\library.jpg" />
     <Content Include="Content\chosen-sprite.png" />
     <Content Include="Content\chosen.css" />
     <Content Include="Content\chosen.min.css" />
+    <Content Include="Content\sand.jpg" />
+    <Content Include="Content\seamless.jpg" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />

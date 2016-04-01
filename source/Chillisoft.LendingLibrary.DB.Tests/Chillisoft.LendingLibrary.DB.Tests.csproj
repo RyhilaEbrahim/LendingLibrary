@@ -83,6 +83,7 @@
     <Compile Include="Repositories\TestBorrowerItemRepository.cs" />
     <Compile Include="Repositories\TestBorrowerRepository.cs" />
     <Compile Include="Repositories\TestItemBorrower.cs" />
+    <Compile Include="Repositories\TestRoleRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
