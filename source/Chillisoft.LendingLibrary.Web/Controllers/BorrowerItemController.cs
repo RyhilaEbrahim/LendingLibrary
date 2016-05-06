@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using AutoMapper;
 using Chillisoft.LendingLibrary.Core.Domain;
 using Chillisoft.LendingLibrary.Core.Interfaces.Repositories;
+using Chillisoft.LendingLibrary.Web.CustomFilters;
 using Chillisoft.LendingLibrary.Web.Models;
 using Chillisoft.LendingLibrary.Web.Services;
 
@@ -27,6 +28,8 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
             _itemRepository = itemRepository;
         }
         // GET: BorrowerItem
+        [AuthLog(Roles = "Borrower")]
+        [AuthLog(Roles = "Admin")]
         public ActionResult Index()
         {
 

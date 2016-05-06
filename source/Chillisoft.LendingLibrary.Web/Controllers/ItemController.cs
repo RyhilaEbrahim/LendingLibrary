@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using AutoMapper;
 using Chillisoft.LendingLibrary.Core.Domain;
 using Chillisoft.LendingLibrary.Core.Interfaces.Repositories;
+using Chillisoft.LendingLibrary.Web.CustomFilters;
 using Chillisoft.LendingLibrary.Web.Models;
 
 namespace Chillisoft.LendingLibrary.Web.Controllers
@@ -12,15 +13,16 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
         private readonly IItemRepository _itemRepository;
         private readonly IMappingEngine _mappingEngine;
 
-
+       
         // GET: BorrowerViewModel
         public ItemController(IItemRepository itemRepository, IMappingEngine mappingEngine)
         {
             _itemRepository = itemRepository;
             _mappingEngine = mappingEngine;
         }
-        
+
         // GET: Item
+        [AuthLog(Roles = "Admin")]
         public ActionResult Index()
         {
             var items = _itemRepository.GetAll();

@@ -23,6 +23,7 @@ namespace Chillisoft.LendingLibrary.Web.Controllers
             _borrowerRepository = borrowerRepository;
             _mappingEngine = mappingEngine;
         }
+        [AuthLog(Roles = "Borrower")]
         [AuthLog(Roles = "Admin")]
         public ActionResult Index()
         {
